@@ -54,7 +54,8 @@ services:
     working_dir: /app
     volumes:
       - ./backend:/app
-      - terranode_m2:/root/.m2 # Caches Maven dependencies for rapid restarts
+      - terranode_m2:/root/.m2    # Caches Maven dependencies for rapid restarts
+      - terranode_keys:/app/keys  # Persists RSA keypair across container restarts
     ports:
       - "8080:8080"
     environment:
@@ -65,6 +66,7 @@ services:
     depends_on:
       postgres-postgis:
         condition: service_healthy
+    command: mvn spring-boot:run
 
   # ==============================================================================
   # ACCESSIBILITY LAYER: The Bhashini Voice Client
@@ -83,6 +85,8 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+    command: >
+      sh -c "npm install && npm run dev"
     depends_on:
       - backend
 
@@ -90,4 +94,6 @@ volumes:
   terranode_pgdata:
     driver: local
   terranode_m2:
+    driver: local
+  terranode_keys:
     driver: local

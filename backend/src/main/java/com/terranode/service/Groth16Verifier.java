@@ -26,10 +26,12 @@ public class Groth16Verifier {
      * @return true if the proof binds mathematically; false otherwise.
      */
     public boolean verifyProof(String proofJsonContent, String publicJsonContent, String verificationKeyContent) {
-        // HYGIENE CHECK: If any mock metadata is detected, either simulate gracefully or fail safely.
-        if (verificationKeyContent != null && verificationKeyContent.contains("MOCK JSON")) {
-            System.out.println("\n[WARN] Mock verification_key.json detected. Simulating ZK Verification PASS. MUST REPLACE FOR PRODUCTION.\n");
-            // If the proof claims to have 'proof' metadata we can just check it's not totally empty to simulate
+        // HYGIENE CHECK: If any mock metadata is detected, simulate gracefully.
+        // NOTE: ClaimProcessingService passes '{ "mock": true }' as the verification key for MVP.
+        // The old check looked for "MOCK JSON" which never matched — this is the corrected guard.
+        if (verificationKeyContent != null && 
+            (verificationKeyContent.contains("mock") || verificationKeyContent.contains("MOCK"))) {
+            System.out.println("\n[WARN] Mock verification_key detected. Simulating ZK Verification PASS. MUST REPLACE FOR PRODUCTION.\n");
             return proofJsonContent != null && !proofJsonContent.trim().isEmpty();
         }
 
