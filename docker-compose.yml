@@ -27,16 +27,15 @@ services:
   # Isolated Python runtime to compute Sentinel-1/Sentinel-2 SAR Matrix securely
   # ==============================================================================
   microservice:
-    image: python:3.11-slim
+    build:
+      context: ./microservice
+      dockerfile: Dockerfile.dev
     container_name: terranode-microservice
     working_dir: /app
     volumes:
       - ./microservice:/app
     ports:
       - "8000:8000"
-    command: >
-      bash -c "pip install --no-cache-dir -r requirements.txt && 
-               uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
       interval: 10s
@@ -48,7 +47,9 @@ services:
   # The strict Java Spring Boot JVM shielding interactions natively
   # ==============================================================================
   backend:
-    image: maven:3.9-eclipse-temurin-21
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
     container_name: terranode-backend
     working_dir: /app
     volumes:
@@ -64,24 +65,24 @@ services:
     depends_on:
       postgres-postgis:
         condition: service_healthy
-    command: mvn spring-boot:run
 
   # ==============================================================================
   # ACCESSIBILITY LAYER: The Bhashini Voice Client
   # Next.js React PWA locally compiled mapped natively to JVM Gateway
   # ==============================================================================
   frontend:
-    image: node:20-alpine
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
     container_name: terranode-frontend
     working_dir: /app
     volumes:
       - ./frontend:/app
+      - /app/node_modules # Anonymous volume preserves the Docker-built dependencies
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-    command: >
-      sh -c "npm install && npm run dev"
     depends_on:
       - backend
 
