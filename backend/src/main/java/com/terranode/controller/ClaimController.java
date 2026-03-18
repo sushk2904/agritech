@@ -21,9 +21,12 @@ public class ClaimController {
         this.claimService = claimService;
     }
 
-    // Strictly mapping to the JSON schema bypassing String arrays maliciously injected.
+    // Strictly mapping to the JSON schema from VisualClaimCamera.tsx
+    // imageHash is the SHA-256 fingerprint of the damage photo generated client-side
     public record ClaimPayload(
             String hashedFarmerId,
+            String damageType,
+            String imageHash,
             String encryptedPayload,
             String encryptedAesKey,
             String iv,

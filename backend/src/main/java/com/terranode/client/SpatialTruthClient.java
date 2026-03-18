@@ -40,8 +40,9 @@ public class SpatialTruthClient {
 
         GeoJsonPolygon payload = new GeoJsonPolygon("Polygon", coordinates);
 
-        // Routing to the local Python FastAPI uvicorn daemon
-        String microserviceUrl = "http://localhost:8000/api/v1/analyze-polygon";
+        // Docker inter-container networking: use service name, NOT localhost
+        // 'localhost' inside the backend container resolves to itself, not the Python service
+        String microserviceUrl = "http://microservice:8000/api/v1/analyze-polygon";
         
         return restTemplate.postForObject(microserviceUrl, payload, AIAnalysisResult.class);
     }
