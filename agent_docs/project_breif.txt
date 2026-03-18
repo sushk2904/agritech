@@ -1,0 +1,24 @@
+# Project Brief & Engineering Constraints
+
+## The "DPI & Web3" Bar
+We are building a highly secure, privacy-preserving infrastructure node, not a weekend CRUD app. The system must tolerate hostile environments and protect critical citizen data at all costs. 
+
+## Non-Negotiable Engineering Standards
+
+1. **Strict Crypto-Hygiene (Zero-Tolerance Policy):**
+   - **NO `String` for PII:** In Java/Backend, never store raw AES keys, Aadhaar numbers, or banking routing info as standard immutable `String` objects. 
+   - **Memory Wiping:** You MUST use `char[]` or `byte[]` for all sensitive decrypted payloads and explicitly overwrite them with zeros immediately after the cryptographic operation completes to prevent memory heap scraping.
+   - **Logging Suppression:** Never log raw AES keys, IVs, or decrypted PII. Log the *lifecycle* (e.g., "[CryptoService] Successfully decrypted payload for FarmerID-Hash"), not the *data*.
+
+2. **The Hybrid Encryption Pipeline:**
+   - Transport Layer Security (TLS) is assumed but treated as insufficient.
+   - Payload must be encrypted *on the client-side* before hitting the network.
+   - **Protocol:** Generate ephemeral AES-256-GCM key -> Encrypt payload -> Encapsulate AES key using Backend's RSA-2048 Public Key via RSA-OAEP with SHA-256 -> Send JSON bundle.
+
+3. **Strict Typing & Frontend Architecture:**
+   - No `any` in TypeScript. No raw `Object` or generic `Map<String, Object>` in Java.
+   - Frontend must be a Progressive Web App (PWA) optimized for offline-first capabilities.
+   - **UI Rule:** Do NOT use bloated component libraries (e.g., Material UI, Ant Design). Strictly use **shadcn/ui** via CLI (`npx shadcn-ui@latest add`) to inject accessible, unstyled Radix primitives and style them with Tailwind.
+
+4. **Comments & Intent:**
+   - Explain *why* you are doing a crypto/AI step, not just *what*.

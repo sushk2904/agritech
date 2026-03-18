@@ -1,0 +1,22 @@
+{
+  "name": "TerraNode Enterprise DPI Platform",
+  "short_name": "TerraNode",
+  "description": "Federated agricultural insurance platform with Bhashini Voice and zk-SNARK privacy.",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
