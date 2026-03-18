@@ -1,0 +1,2 @@
+MOCK_ZKEY_PLACEHOLDER
+Run setup.js natively to generate the legitimate Groth16 Proving Key.

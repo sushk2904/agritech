@@ -1,0 +1,2 @@
+This is a mock placeholder for the WebAssembly (WASM) compiled circom circuit.
+A real compile must overwrite this before production.

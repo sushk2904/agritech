@@ -39,10 +39,8 @@ public class CryptoServiceTest {
         GCMParameterSpec gcmSpec = new GCMParameterSpec(128, iv);
         aesCipher.init(Cipher.ENCRYPT_MODE, aesKey, gcmSpec);
         
-        // Includes the auth tag at the end in Java's default AES/GCM implementation
         byte[] encryptedPayload = aesCipher.doFinal(payloadData);
 
-        // Fetch RSA public key natively from the instantiated service via Reflection
         java.lang.reflect.Field field = CryptoService.class.getDeclaredField("rsaKeyPair");
         field.setAccessible(true);
         KeyPair serverKeys = (KeyPair) field.get(cryptoService);
@@ -54,7 +52,6 @@ public class CryptoServiceTest {
         // 2. Perform the Decryption via the Target Method
         byte[] decryptedBytes = cryptoService.decryptPayload(encryptedPayload, iv, encapsulatedAesKey);
 
-        // Check accurate description
         assertArrayEquals(payloadData, decryptedBytes, "Decrypted bytes must absolutely match original payload.");
         assertEquals(sensitiveData, new String(decryptedBytes, StandardCharsets.UTF_8));
 
