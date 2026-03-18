@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # ==============================================================================
+  # BASE LAYER: The Cryptographic Data Vault
+  # Requires PostGIS natively mapped for precise Topology Intersections (JTS)
+  # ==============================================================================
+  postgres-postgis:
+    image: postgis/postgis:16-3.4
+    container_name: terranode-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: agristack
+    ports:
+      - "5432:5432"
+    volumes:
+      - terranode_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d agristack"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ==============================================================================
+  # DEEPTECH LAYER: Multi-Sensor ML Engine
+  # Isolated Python runtime to compute Sentinel-1/Sentinel-2 SAR Matrix securely
+  # ==============================================================================
+  microservice:
+    image: python:3.11-slim
+    container_name: terranode-microservice
+    working_dir: /app
+    volumes:
+      - ./microservice:/app
+    ports:
+      - "8000:8000"
+    command: >
+      bash -c "pip install --no-cache-dir -r requirements.txt && 
+               uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ==============================================================================
+  # MIDDLEWARE GATEWAY: Zero-Knowledge & AES-GCM Orchestrator
+  # The strict Java Spring Boot JVM shielding interactions natively
+  # ==============================================================================
+  backend:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: terranode-backend
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+      - terranode_m2:/root/.m2 # Caches Maven dependencies for rapid restarts
+    ports:
+      - "8080:8080"
+    environment:
+      # Injecting the Docker network DNS exactly overriding localhost
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-postgis:5432/agristack
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      postgres-postgis:
+        condition: service_healthy
+    command: mvn spring-boot:run
+
+  # ==============================================================================
+  # ACCESSIBILITY LAYER: The Bhashini Voice Client
+  # Next.js React PWA locally compiled mapped natively to JVM Gateway
+  # ==============================================================================
+  frontend:
+    image: node:20-alpine
+    container_name: terranode-frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: >
+      sh -c "npm install && npm run dev"
+    depends_on:
+      - backend
+
+volumes:
+  terranode_pgdata:
+    driver: local
+  terranode_m2:
+    driver: local

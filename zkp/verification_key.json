@@ -1,0 +1,29 @@
+{
+  "protocol": "groth16",
+  "curve": "bn128",
+  "vk_alpha_1": ["MOCK_ALPHA_1_X", "MOCK_ALPHA_1_Y", "1"],
+  "vk_beta_2": [
+    ["MOCK_BETA_X1", "MOCK_BETA_X2"],
+    ["MOCK_BETA_Y1", "MOCK_BETA_Y2"],
+    ["1", "0"]
+  ],
+  "vk_gamma_2": [
+    ["MOCK_GAMMA_X1", "MOCK_GAMMA_X2"],
+    ["MOCK_GAMMA_Y1", "MOCK_GAMMA_Y2"],
+    ["1", "0"]
+  ],
+  "vk_delta_2": [
+    ["MOCK_DELTA_X1", "MOCK_DELTA_X2"],
+    ["MOCK_DELTA_Y1", "MOCK_DELTA_Y2"],
+    ["1", "0"]
+  ],
+  "vk_alphabeta_12": [
+    [["MOCK_AB_X1", "MOCK_AB_X2"], ["MOCK_AB_Y1", "MOCK_AB_Y2"], ["MOCK_AB_Z1", "0"]],
+    [["MOCK_AB_X1", "0"], ["MOCK_AB_Y1", "0"], ["0", "0"]]
+  ],
+  "IC": [
+    ["MOCK_IC0_X", "MOCK_IC0_Y", "1"],
+    ["MOCK_IC1_X", "MOCK_IC1_Y", "1"]
+  ],
+  "warning": "MOCK JSON - DO NOT USE IN PRODUCTION. OVERWRITE USING SETUP.JS"
+}
