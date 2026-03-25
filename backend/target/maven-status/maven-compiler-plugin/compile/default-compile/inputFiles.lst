@@ -1,3 +1,6 @@
+/app/src/main/java/com/terranode/CorsConfig.java
+/app/src/main/java/com/terranode/entity/FarmPlot.java
+/app/src/main/java/com/terranode/controller/AgriStackController.java
 /app/src/main/java/com/terranode/controller/ClaimController.java
 /app/src/main/java/com/terranode/entity/FarmerProfile.java
 /app/src/main/java/com/terranode/service/CryptoService.java
@@ -5,8 +8,6 @@
 /app/src/main/java/com/terranode/service/ClaimProcessingService.java
 /app/src/main/java/com/terranode/BackendApplication.java
 /app/src/main/java/com/terranode/client/SpatialTruthClient.java
-/app/src/main/java/com/terranode/entity/FarmPlot.java
 /app/src/main/java/com/terranode/repository/FarmerProfileRepository.java
-/app/src/main/java/com/terranode/controller/AgriStackController.java
 /app/src/main/java/com/terranode/controller/SecurityController.java
 /app/src/main/java/com/terranode/service/Groth16Verifier.java

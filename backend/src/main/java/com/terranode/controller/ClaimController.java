@@ -48,7 +48,7 @@ public class ClaimController {
             return ResponseEntity.ok("Claim Successfully Decrypted, Verified by ZK-SNARK, and Analyzed spatially.");
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("Cryptographic Pipeline Sequence Rejected natively.");
+            return ResponseEntity.badRequest().body("Pipeline error: " + e.getMessage());
         }
     }
 }

@@ -1,4 +1,11 @@
 FROM maven:3.9-eclipse-temurin-21
+
+# Install Node.js (v20) & snarkjs globally so the Java backend can execute native ZK proofs
+RUN apt-get update && apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g snarkjs
+
 WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
