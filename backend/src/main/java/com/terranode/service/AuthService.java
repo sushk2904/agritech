@@ -1,12 +1,13 @@
 package com.terranode.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.terranode.entity.Farmer;
 import com.terranode.repository.FarmerRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.terranode.dto.ProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Optional;
+
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -111,5 +112,52 @@ public class AuthService {
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key)
                 .compact();
+    }
+    public ProfileResponse getFarmerProfile(String tokenHeader) {
+        if (tokenHeader == null || !tokenHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Missing or invalid Authorization header");
+        }
+        String token = tokenHeader.substring(7);
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        try {
+            io.jsonwebtoken.Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+            String farmerId = claims.getSubject();
+            if (farmerId == null) throw new RuntimeException("Token subject missing");
+
+            Farmer farmer = farmerRepository.findById(farmerId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+            return new ProfileResponse(
+                farmer.getId(),
+                farmer.getFullName(),
+                farmer.getEmail(),
+                farmer.getWalletAddress()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid or expired token: " + e.getMessage());
+        }
+    }
+
+    public String updateFarmerName(String tokenHeader, String newName) {
+        if (tokenHeader == null || !tokenHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Missing or invalid Authorization header");
+        }
+        String token = tokenHeader.substring(7);
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        try {
+            io.jsonwebtoken.Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+            String farmerId = claims.getSubject();
+            if (farmerId == null) throw new RuntimeException("Token subject missing");
+
+            Farmer farmer = farmerRepository.findById(farmerId)
+                .orElseThrow(() -> new RuntimeException("Account not found for authenticated token"));
+
+            farmer.setFullName(newName.trim());
+            farmerRepository.save(farmer);
+
+            return generateSecureToken(farmer.getId(), farmer.getWalletAddress(), farmer.getFullName());
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid token signature or payload: " + e.getMessage());
+        }
     }
 }
