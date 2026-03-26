@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"EMAIL" | "OTP">("EMAIL");
@@ -15,13 +16,14 @@ export default function LoginPage() {
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.includes("@")) return setError("Invalid email address.");
+    if (fullName.length < 2) return setError("Please enter your full name.");
     
     setLoading(true);
     try {
       const res = await fetch("http://localhost:8080/api/v1/auth/request-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, fullName }),
       });
       if (!res.ok) throw new Error("Failed to send Email OTP");
       setStep("OTP");
@@ -80,11 +82,23 @@ export default function LoginPage() {
         {step === "EMAIL" ? (
           <form onSubmit={handleRequestOtp} className="space-y-5">
             <div className="space-y-2">
+              <label className="text-xs uppercase tracking-wider text-white/50">Full Name</label>
+              <div className="flex items-center rounded-xl border border-white/10 bg-white/5 pr-4 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50">
+                <input
+                  type="text"
+                  autoFocus
+                  value={fullName}
+                  placeholder="John Doe"
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="w-full bg-transparent p-4 text-white focus:outline-none placeholder:text-white/20"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
               <label className="text-xs uppercase tracking-wider text-white/50">Email Address</label>
               <div className="flex items-center rounded-xl border border-white/10 bg-white/5 pr-4 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50">
                 <input
                   type="email"
-                  autoFocus
                   value={email}
                   placeholder="name@example.com"
                   onChange={(e) => setEmail(e.target.value)}
@@ -94,7 +108,7 @@ export default function LoginPage() {
             </div>
             <Button
               type="submit"
-              disabled={loading || !email.includes("@")}
+              disabled={loading || !email.includes("@") || fullName.length < 2}
               className="w-full h-12 rounded-full uppercase tracking-[0.18em]"
             >
               {loading ? "Requesting..." : "Send OTP"}
