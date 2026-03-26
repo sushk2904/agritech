@@ -12,6 +12,9 @@ public class Farmer {
     @Id
     private String id = UUID.randomUUID().toString();
 
+    @Column(name = "full_name")
+    private String fullName;
+
     // Sensitive field, encrypted in Postgres via AES
     @Convert(converter = PiiAttributeConverter.class)
     @Column(name = "email", unique = true, nullable = false)
@@ -36,6 +39,9 @@ public class Farmer {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
     public String getCurrentOtp() { return currentOtp; }
     public void setCurrentOtp(String currentOtp) { this.currentOtp = currentOtp; }

@@ -39,7 +39,7 @@ public class AuthService {
         this.mailSender = mailSender;
     }
 
-    public String requestOtp(String email) {
+    public String requestOtp(String email, String fullName) {
         final String formattedEmail = email.trim().toLowerCase();
 
         return farmerRepository.findByEmail(formattedEmail)
@@ -47,6 +47,7 @@ public class AuthService {
             .orElseGet(() -> {
                 Farmer newFarmer = new Farmer();
                 newFarmer.setEmail(formattedEmail);
+                newFarmer.setFullName(fullName != null ? fullName.trim() : "Verified Farmer");
                 newFarmer.setWalletAddress("0xGen" + UUID.randomUUID().toString().substring(0, 10));
                 farmerRepository.save(newFarmer);
                 return generateAndSaveOtp(newFarmer);
@@ -97,14 +98,15 @@ public class AuthService {
         farmer.setOtpExpiry(null);
         farmerRepository.save(farmer);
 
-        return generateSecureToken(farmer.getId(), farmer.getWalletAddress());
+        return generateSecureToken(farmer.getId(), farmer.getWalletAddress(), farmer.getFullName());
     }
 
-    private String generateSecureToken(String farmerId, String wallet) {
+    private String generateSecureToken(String farmerId, String wallet, String fullName) {
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         return Jwts.builder()
                 .subject(farmerId)
                 .claim("wallet", wallet)
+                .claim("name", fullName)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key)

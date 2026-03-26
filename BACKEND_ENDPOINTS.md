@@ -16,7 +16,8 @@ Triggers the JavaMailSender to securely dispatch a 4-digit code to the user's em
 - **Request Body (JSON):**
   ```json
   {
-    "email": "farmer@example.com"
+    "email": "farmer@example.com",
+    "fullName": "Aryan Sharma"
   }
   ```
 - **Success Response:** `200 OK`
