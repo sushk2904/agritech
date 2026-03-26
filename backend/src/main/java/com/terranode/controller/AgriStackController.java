@@ -1,8 +1,7 @@
 package com.terranode.controller;
 
-import com.terranode.entity.FarmPlot;
 import com.terranode.repository.FarmPlotRepository;
-import com.terranode.repository.FarmerProfileRepository;
+import com.terranode.repository.FarmerRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.locationtech.jts.geom.Coordinate;
@@ -14,21 +13,22 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 public class AgriStackController {
 
-    private final FarmerProfileRepository farmerProfileRepository;
+    private final FarmerRepository farmerRepository;
     private final FarmPlotRepository farmPlotRepository;
 
-    public AgriStackController(FarmerProfileRepository farmerProfileRepository, FarmPlotRepository farmPlotRepository) {
-        this.farmerProfileRepository = farmerProfileRepository;
+    public AgriStackController(FarmerRepository farmerRepository, FarmPlotRepository farmPlotRepository) {
+        this.farmerRepository = farmerRepository;
         this.farmPlotRepository = farmPlotRepository;
     }
 
     // Structuring standard GeoJSON format for the Next.js frontend to plot on maplibre-gl
     public record GeoJsonPolygon(String type, List<List<double[]>> coordinates) {}
 
-    @GetMapping("/farmer/{hashedFarmerId}/plot")
-    public ResponseEntity<GeoJsonPolygon> getFarmerPlot(@PathVariable String hashedFarmerId) {
-        return farmerProfileRepository.findByHashedFarmerId(hashedFarmerId)
-                .flatMap(farmPlotRepository::findByFarmerProfile)
+    @GetMapping("/farmer/{farmerId}/plot")
+    public ResponseEntity<GeoJsonPolygon> getFarmerPlot(@PathVariable String farmerId) {
+        if (farmerId == null) return ResponseEntity.badRequest().build();
+        return farmerRepository.findById(farmerId)
+                .flatMap(farmPlotRepository::findByFarmer)
                 .map(plot -> {
                     Coordinate[] coords = plot.getBoundaries().getCoordinates();
                     List<double[]> points = new ArrayList<>();

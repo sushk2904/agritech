@@ -12,8 +12,8 @@ public class FarmPlot {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "farmer_profile_id", nullable = false)
-    private FarmerProfile farmerProfile;
+    @JoinColumn(name = "farmer_id", nullable = false)
+    private Farmer farmer;
 
     // Uses JTS Topology Suite for PostGIS geometry configuration
     @Column(columnDefinition = "geometry(Polygon,4326)")
@@ -21,14 +21,14 @@ public class FarmPlot {
 
     public FarmPlot() {}
 
-    public FarmPlot(FarmerProfile farmerProfile, Polygon boundaries) {
-        this.farmerProfile = farmerProfile;
+    public FarmPlot(Farmer farmer, Polygon boundaries) {
+        this.farmer = farmer;
         this.boundaries = boundaries;
     }
 
     public Long getId() { return id; }
-    public FarmerProfile getFarmerProfile() { return farmerProfile; }
-    public void setFarmerProfile(FarmerProfile farmerProfile) { this.farmerProfile = farmerProfile; }
+    public Farmer getFarmer() { return farmer; }
+    public void setFarmer(Farmer farmer) { this.farmer = farmer; }
     public Polygon getBoundaries() { return boundaries; }
     public void setBoundaries(Polygon boundaries) { this.boundaries = boundaries; }
 }

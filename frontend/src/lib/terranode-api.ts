@@ -184,3 +184,30 @@ export const getPublicKey = async () => {
   if (!res.ok) throw new Error("Could not fetch public key");
   return res.text(); // PEM formatted RSA public key string
 };
+
+// ── 6. Claim History ──────────────────────────────────────────────────────────
+
+/**
+ * Fetches the claim history for the logged-in farmer.
+ * Includes status, blockchain TX hash, and AI feedback.
+ */
+export const getHistory = async () => {
+  const decoded = decodeToken();
+  if (!decoded) throw new Error("User not logged in");
+  
+  const res = await fetch(`${BASE_URL}/claims?farmerId=${decoded.sub}`, {
+    method: "GET",
+    headers: authHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message ?? "Could not fetch history");
+  return data as Array<{
+    id: string;
+    damageType: string;
+    status: string;
+    blockchainTx: string;
+    confidenceScore: number;
+    damageReason: String;
+    createdAt: string;
+  }>;
+};

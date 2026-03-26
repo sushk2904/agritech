@@ -1,10 +1,12 @@
 package com.terranode.controller;
 
+import com.terranode.entity.Claim;
+import com.terranode.repository.ClaimRepository;
 import com.terranode.service.ClaimProcessingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Base64;
+import java.util.List;
 
 /**
  * Enterprise API Gateway establishing the secure bridge from Next.js 
@@ -12,13 +14,14 @@ import java.util.Base64;
  */
 @RestController
 @RequestMapping("/api/v1/claims")
-@CrossOrigin(origins = "http://localhost:3000") // Permitting strictly matched React proxy
 public class ClaimController {
 
     private final ClaimProcessingService claimService;
+    private final ClaimRepository claimRepository;
 
-    public ClaimController(ClaimProcessingService claimService) {
+    public ClaimController(ClaimProcessingService claimService, ClaimRepository claimRepository) {
         this.claimService = claimService;
+        this.claimRepository = claimRepository;
     }
 
     // Strictly mapping to the JSON schema from VisualClaimCamera.tsx
@@ -50,5 +53,10 @@ public class ClaimController {
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Pipeline error: " + e.getMessage());
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Claim>> getClaimsByFarmer(@RequestParam String farmerId) {
+        return ResponseEntity.ok(claimRepository.findByFarmerIdOrderByCreatedAtDesc(farmerId));
     }
 }
