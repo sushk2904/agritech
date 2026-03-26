@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-record RequestOtpPayload(String email) {}
+record RequestOtpPayload(String email, String fullName) {}
 record VerifyOtpPayload(String email, String otp) {}
 record AuthMessageResponse(String message) {}
 record AuthTokenResponse(String token) {}
@@ -23,7 +23,7 @@ public class AuthController {
     @PostMapping("/request-otp")
     public ResponseEntity<AuthMessageResponse> requestOtp(@RequestBody RequestOtpPayload request) {
         try {
-            String baseSafeResponse = authService.requestOtp(request.email());
+            String baseSafeResponse = authService.requestOtp(request.email(), request.fullName());
             return ResponseEntity.ok(new AuthMessageResponse(baseSafeResponse));
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new AuthMessageResponse(e.getMessage()));
