@@ -1,0 +1,16 @@
+{
+  "name": "agritech-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AgriTech Next.js frontend",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^16.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  }
+}

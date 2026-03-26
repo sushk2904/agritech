@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgriTech Frontend Preview</title>
+    <meta
+      name="description"
+      content="AgriTech frontend preview with multilingual controls, theme switching, and an animated 3D-style hero."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-theme="dark">
+    <div class="page-noise" aria-hidden="true"></div>
+    <div class="page-halo page-halo-left" aria-hidden="true"></div>
+    <div class="page-halo page-halo-right" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="brand-mark">A</div>
+        <div>
+          <p class="brand-name">AgriTech</p>
+          <p class="brand-caption" data-i18n="brandCaption">Frontend preview</p>
+        </div>
+      </div>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="./index.html" data-nav data-i18n="navHome">Home</a>
+        <a href="./about.html" data-nav data-i18n="navAbout">About</a>
+        <a href="./project.html" data-nav data-i18n="navProject">Project</a>
+        <a href="./login.html" data-nav data-i18n="navLogin">Login</a>
+        <a href="./signup.html" data-nav data-i18n="navSignup">Sign Up</a>
+      </nav>
+
+      <div class="toolbar">
+        <div class="language-switch" role="group" aria-label="Language switcher">
+          <button class="lang-btn active" data-lang="en" type="button">EN</button>
+          <button class="lang-btn" data-lang="hi" type="button">HI</button>
+        </div>
+
+        <button id="themeToggle" class="theme-toggle" type="button" aria-live="polite">
+          <span class="theme-toggle-label" data-i18n="themeDark">Dark mode</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero section-shell" id="overview">
+        <div class="hero-copy">
+          <p class="eyebrow" data-i18n="eyebrow">Field-first trust infrastructure</p>
+          <h1 data-i18n="heroTitle">
+            AgriTech turns crop-insurance access into a guided, multilingual digital journey.
+          </h1>
+          <p class="hero-lead" data-i18n="heroLead">
+            This preview combines a 3D-style trust-first landing experience, farmer claim flow, and
+            an admin-ready monitoring surface in one polished frontend direction.
+          </p>
+
+          <div class="hero-actions">
+            <a class="button button-primary" href="./project.html" data-i18n="ctaPrimary">
+              Open project workspace
+            </a>
+            <a class="button button-secondary" href="./signup.html" data-i18n="ctaSecondary">
+              Create account
+            </a>
+          </div>
+
+          <div class="metric-grid" aria-label="Key metrics">
+            <article class="metric-card">
+              <span class="metric-value">2s</span>
+              <span class="metric-label" data-i18n="metricOne">Guided response target</span>
+            </article>
+            <article class="metric-card">
+              <span class="metric-value">2</span>
+              <span class="metric-label" data-i18n="metricTwo">Preview languages</span>
+            </article>
+            <article class="metric-card">
+              <span class="metric-value">256</span>
+              <span class="metric-label" data-i18n="metricThree">Encryption-ready handoff</span>
+            </article>
+          </div>
+        </div>
+
+        <div class="hero-scene" aria-hidden="true">
+          <div class="scene-shell">
+            <div class="scene-glow"></div>
+            <div class="scene-grid"></div>
+            <div class="terrain-stack">
+              <div class="terrain-layer terrain-layer-back"></div>
+              <div class="terrain-layer terrain-layer-mid"></div>
+              <div class="terrain-layer terrain-layer-front"></div>
+            </div>
+            <div class="scene-column scene-column-left"></div>
+            <div class="scene-column scene-column-right"></div>
+            <div class="scene-orbit orbit-one"></div>
+            <div class="scene-orbit orbit-two"></div>
+            <div class="scene-particle particle-one"></div>
+            <div class="scene-particle particle-two"></div>
+            <div class="scene-particle particle-three"></div>
+            <div class="scene-core">
+              <div class="scene-ring scene-ring-large"></div>
+              <div class="scene-ring scene-ring-small"></div>
+              <div class="scene-orb"></div>
+            </div>
+
+            <article class="floating-card floating-card-top">
+              <p class="card-kicker" data-i18n="sceneCardOneKicker">Claim intake</p>
+              <h2 data-i18n="sceneCardOneTitle">Hindi claim capture ready</h2>
+              <p data-i18n="sceneCardOneText">Farmer intent recognized and routed to damage report.</p>
+            </article>
+
+            <article class="floating-card floating-card-right">
+              <p class="card-kicker" data-i18n="sceneCardTwoKicker">Zone verification</p>
+              <h2 data-i18n="sceneCardTwoTitle">Proof status: verified</h2>
+              <p data-i18n="sceneCardTwoText">Privacy-safe coordinates validated against a flood zone.</p>
+            </article>
+
+            <article class="floating-card floating-card-bottom">
+              <p class="card-kicker" data-i18n="sceneCardThreeKicker">Disbursal path</p>
+              <h2 data-i18n="sceneCardThreeTitle">Backend bridge prepared</h2>
+              <p data-i18n="sceneCardThreeText">JWT-secured handoff and payout status updates in one flow.</p>
+            </article>
+
+            <div class="scene-pill scene-pill-left">
+              <span class="status-dot"></span>
+              <span data-i18n="scenePillOne">Localized guidance active</span>
+            </div>
+
+            <div class="scene-pill scene-pill-right">
+              <span class="status-dot"></span>
+              <span data-i18n="scenePillTwo">Offline-ready shell</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="trust-strip section-shell">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="trustKicker">Built for rural confidence</p>
+          <h2 data-i18n="trustTitle">A calmer, clearer product face for a deep-tech insurance platform.</h2>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3 data-i18n="featureOneTitle">Multilingual guidance</h3>
+            <p data-i18n="featureOneText">
+              Clear prompts, large action targets, and multilingual microcopy for first-time users.
+            </p>
+          </article>
+          <article class="feature-card">
+            <h3 data-i18n="featureTwoTitle">Trust-visible security</h3>
+            <p data-i18n="featureTwoText">
+              Privacy states, proof progression, and encryption cues are explained without exposing complexity.
+            </p>
+          </article>
+          <article class="feature-card">
+            <h3 data-i18n="featureThreeTitle">Hackathon-ready storytelling</h3>
+            <p data-i18n="featureThreeText">
+              The same frontend can pitch the product, demo the user flow, and show the operator dashboard.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="workflow section-shell" id="experience">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="workflowKicker">Farmer journey</p>
+          <h2 data-i18n="workflowTitle">A modern claim experience that feels guided, not technical.</h2>
+        </div>
+
+        <div class="experience-grid">
+          <article class="phone-card">
+            <div class="phone-header">
+              <span class="phone-dot"></span>
+              <span data-i18n="phoneHeader">Farmer app preview</span>
+            </div>
+
+            <div class="phone-screen">
+              <div class="status-badge">
+                <span class="status-dot"></span>
+                <span data-i18n="voiceBadge">Claim intake active</span>
+              </div>
+
+              <h3 data-i18n="phoneTitle">Report crop damage with one guided conversation.</h3>
+              <p class="phone-copy" data-i18n="phoneText">
+                Report the issue, confirm the details, review the safe zone result, and move the claim forward.
+              </p>
+
+              <div class="step-list">
+                <div class="step-item">
+                  <span class="step-index">01</span>
+                  <div>
+                    <p class="step-title" data-i18n="stepOneTitle">Choose language</p>
+                    <p class="step-text" data-i18n="stepOneText">English and Hindi switch instantly across the experience.</p>
+                  </div>
+                </div>
+                <div class="step-item">
+                  <span class="step-index">02</span>
+                  <div>
+                    <p class="step-title" data-i18n="stepTwoTitle">Capture incident</p>
+                    <p class="step-text" data-i18n="stepTwoText">Clear prompts and progress cues reduce confusion in the field.</p>
+                  </div>
+                </div>
+                <div class="step-item">
+                  <span class="step-index">03</span>
+                  <div>
+                    <p class="step-title" data-i18n="stepThreeTitle">Track status</p>
+                    <p class="step-text" data-i18n="stepThreeText">A simplified timeline shows validation, review, and payout stages.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="map-card">
+            <div class="map-head">
+              <div>
+                <p class="map-kicker" data-i18n="mapKicker">Verification layer</p>
+                <h3 data-i18n="mapTitle">Damage zone and proof state in one glance</h3>
+              </div>
+              <span class="map-chip" data-i18n="mapChip">Mock live preview</span>
+            </div>
+
+            <div class="map-surface">
+              <div class="map-grid"></div>
+              <div class="map-zone map-zone-large"></div>
+              <div class="map-zone map-zone-small"></div>
+              <div class="map-point map-point-one"></div>
+              <div class="map-point map-point-two"></div>
+              <div class="map-panel">
+                <p class="card-kicker" data-i18n="proofKicker">Current stage</p>
+                <h4 data-i18n="proofTitle">Claim packet ready for backend sync</h4>
+                <p data-i18n="proofText">The UI can surface JWT session state, proof success, and payout eligibility cleanly.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="control section-shell" id="control">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="controlKicker">Operator surface</p>
+          <h2 data-i18n="controlTitle">A compact admin view that makes the backend feel visible and reliable.</h2>
+        </div>
+
+        <div class="control-grid">
+          <article class="admin-card admin-card-primary">
+            <div class="admin-row">
+              <div>
+                <p class="card-kicker" data-i18n="adminTimelineKicker">Timeline</p>
+                <h3 data-i18n="adminTimelineTitle">Live event stream</h3>
+              </div>
+              <span class="map-chip" data-i18n="adminTimelineChip">Connected flow</span>
+            </div>
+
+            <div class="timeline">
+              <div class="timeline-item">
+                <span class="timeline-time">08:12</span>
+                <p data-i18n="timelineOne">Flood geofence published for Ward 14 cluster.</p>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-time">08:16</span>
+                <p data-i18n="timelineTwo">Multilingual claim submitted and token verified.</p>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-time">08:19</span>
+                <p data-i18n="timelineThree">Proof accepted and payout eligibility marked ready.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="admin-card admin-card-secondary">
+            <p class="card-kicker" data-i18n="bridgeKicker">Integration bridge</p>
+            <h3 data-i18n="bridgeTitle">Frontend wiring points</h3>
+            <ul class="bridge-list">
+              <li data-i18n="bridgeOne">JWT session banner and expiry handling</li>
+              <li data-i18n="bridgeTwo">Claim creation and claim status API hooks</li>
+              <li data-i18n="bridgeThree">Proof verification result and payout state cards</li>
+              <li data-i18n="bridgeFour">Language-aware notifications from the backend</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta-panel section-shell">
+        <div>
+          <p class="section-kicker" data-i18n="ctaKicker">Preview outcome</p>
+          <h2 data-i18n="ctaTitle">This gives your team a visual direction you can present right away.</h2>
+        </div>
+        <p class="cta-copy" data-i18n="ctaText">
+          Once you like this look, the same design system can be moved into the full app build and connected to your backend routes.
+        </p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p data-i18n="footerText">AgriTech frontend preview crafted for a high-trust, multilingual crop insurance experience.</p>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

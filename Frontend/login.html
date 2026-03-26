@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | AgriTech</title>
+    <meta
+      name="description"
+      content="Login preview for the AgriTech frontend experience."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-theme="dark">
+    <div class="page-noise" aria-hidden="true"></div>
+    <div class="page-halo page-halo-left" aria-hidden="true"></div>
+    <div class="page-halo page-halo-right" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="brand-mark">A</div>
+        <div>
+          <p class="brand-name">AgriTech</p>
+          <p class="brand-caption" data-i18n="brandCaption">Frontend preview</p>
+        </div>
+      </div>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="./index.html" data-nav data-i18n="navHome">Home</a>
+        <a href="./about.html" data-nav data-i18n="navAbout">About</a>
+        <a href="./project.html" data-nav data-i18n="navProject">Project</a>
+        <a href="./login.html" data-nav data-i18n="navLogin">Login</a>
+        <a href="./signup.html" data-nav data-i18n="navSignup">Sign Up</a>
+      </nav>
+
+      <div class="toolbar">
+        <div class="language-switch" role="group" aria-label="Language switcher">
+          <button class="lang-btn active" data-lang="en" type="button">EN</button>
+          <button class="lang-btn" data-lang="hi" type="button">HI</button>
+        </div>
+
+        <button id="themeToggle" class="theme-toggle" type="button" aria-live="polite">
+          <span class="theme-toggle-label" data-i18n="themeDark">Dark mode</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="auth-layout section-shell">
+        <article class="auth-panel">
+          <p class="eyebrow" data-i18n="loginEyebrow">Secure access</p>
+          <h1 data-i18n="loginTitle">Sign in to continue into the AgriTech workspace.</h1>
+          <p class="page-lead" data-i18n="loginLead">
+            This screen is designed for a simple handoff into the project workspace while keeping the
+            product feeling trustworthy and calm.
+          </p>
+
+          <div class="surface-card">
+            <p class="card-kicker" data-i18n="loginPanelKicker">What you get</p>
+            <h2 data-i18n="loginPanelTitle">A clean entry into the live workflow.</h2>
+            <p data-i18n="loginPanelText">
+              Use this page for farmers, officers, or demo operators who need to reach the project area fast.
+            </p>
+
+            <ul class="auth-point-list">
+              <li class="signal-row">
+                <strong data-i18n="loginPointOneTitle">Fast role-based entry</strong>
+                <p data-i18n="loginPointOneText">Choose the right access path and move directly into the working surface.</p>
+              </li>
+              <li class="signal-row">
+                <strong data-i18n="loginPointTwoTitle">JWT-ready session model</strong>
+                <p data-i18n="loginPointTwoText">The frontend is already shaped to show token and session states clearly.</p>
+              </li>
+              <li class="signal-row">
+                <strong data-i18n="loginPointThreeTitle">Language continuity</strong>
+                <p data-i18n="loginPointThreeText">The selected language and theme stay consistent across pages.</p>
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="auth-card">
+          <p class="card-kicker" data-i18n="loginFormKicker">Account access</p>
+          <h2 data-i18n="loginFormTitle">Login</h2>
+          <p data-i18n="loginFormText">Use the mock form below to preview the sign-in experience.</p>
+
+          <form class="form-grid" data-demo-form="login" data-result-key="loginSuccess">
+            <div class="field">
+              <label for="login-email" data-i18n="fieldEmail">Email or mobile</label>
+              <input
+                id="login-email"
+                type="text"
+                data-i18n-placeholder="placeholderEmail"
+                placeholder="farmer@agritech.demo"
+              />
+            </div>
+
+            <div class="field">
+              <label for="login-password" data-i18n="fieldPassword">Password</label>
+              <input
+                id="login-password"
+                type="password"
+                data-i18n-placeholder="placeholderPassword"
+                placeholder="Enter your password"
+              />
+            </div>
+
+            <div class="field">
+              <label for="login-role" data-i18n="fieldRole">Role</label>
+              <select id="login-role">
+                <option value="farmer" data-i18n="roleFarmer">Farmer</option>
+                <option value="officer" data-i18n="roleOfficer">Field officer</option>
+                <option value="admin" data-i18n="roleAdmin">Admin operator</option>
+              </select>
+            </div>
+
+            <div class="helper-row">
+              <span data-i18n="rememberText">Remember this device</span>
+              <a class="helper-link" href="./signup.html" data-i18n="forgotText">Need an account?</a>
+            </div>
+
+            <button class="button button-primary" type="submit" data-i18n="loginSubmit">
+              Continue to workspace
+            </button>
+          </form>
+
+          <p class="form-result" data-demo-result="login" hidden></p>
+          <p class="form-caption">
+            <span data-i18n="loginSwitchText">New here?</span>
+            <a class="text-link" href="./signup.html" data-i18n="loginSwitchLink">Create your account</a>
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p data-i18n="footerText">AgriTech frontend preview crafted for a high-trust, multilingual crop insurance experience.</p>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
