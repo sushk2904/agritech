@@ -9,6 +9,7 @@ import {
   generateImageHash,
   wipeMemory,
 } from "@/utils/crypto";
+import { decodeToken, getToken } from "@/lib/terranode-api";
 
 type DamageType = "FLOOD" | "DROUGHT" | "PEST";
 
@@ -89,8 +90,6 @@ const PIPELINE_STEPS: PipelineStatus[] = [
   "ENCRYPTING",
   "SUBMITTING",
 ];
-
-// No mock proofs allowed in production mode.
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
@@ -182,8 +181,15 @@ export function VisualClaimCamera() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewUrlRef = useRef<string | null>(null);
+  const [farmerId, setFarmerId] = useState<string | null>(null);
 
   useEffect(() => {
+    // Get logged-in farmer ID from JWT token
+    const decoded = decodeToken();
+    if (decoded?.sub) {
+      setFarmerId(decoded.sub);
+    }
+
     return () => {
       if (previewUrlRef.current) {
         URL.revokeObjectURL(previewUrlRef.current);
@@ -196,7 +202,6 @@ export function VisualClaimCamera() {
     setStatus("CAMERA_READY");
     setErrorMessage(null);
     
-    // Immediately open the file picker / camera dialogue
     setTimeout(() => {
       fileInputRef.current?.click();
     }, 50);
@@ -204,7 +209,7 @@ export function VisualClaimCamera() {
 
   const handleImageCapture = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !selectedType) {
+    if (!file || !selectedType || !farmerId) {
       return;
     }
 
@@ -238,7 +243,7 @@ export function VisualClaimCamera() {
       const imageBase64 = uint8ArrayToBase64(new Uint8Array(imageArrayBuffer));
 
       const rawPayload = JSON.stringify({
-        farmerId: "a1b2c3d4e5f6g7h8i9j0",
+        farmerId: farmerId,
         damageType: selectedType,
         imageHash,
         imageBase64,
@@ -265,7 +270,7 @@ export function VisualClaimCamera() {
       setStatus("SUBMITTING");
 
       const bundle = {
-        hashedFarmerId: "a1b2c3d4e5f6g7h8i9j0",
+        hashedFarmerId: farmerId,
         damageType: selectedType,
         imageHash,
         encryptedPayload: uint8ArrayToBase64(pureCiphertext),
@@ -277,29 +282,26 @@ export function VisualClaimCamera() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-      let submitResponse: Response | null = null;
-
       try {
-        submitResponse = await fetch("http://localhost:8080/api/v1/claims/submit", {
+        const submitResponse = await fetch("http://localhost:8080/api/v1/claims/submit", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${getToken()}`,
+          },
           body: JSON.stringify(bundle),
           signal: controller.signal,
         });
-      } catch (error: unknown) {
-        // [DEMO FALLBACK] Backend offline — log and continue to SUCCESS for hackathon demo.
-        // Remove this fallback once the Spring Boot gateway is reliably running.
-        console.warn("[DPI] Gateway unreachable (demo fallback active):", getErrorMessage(error));
+
+        if (!submitResponse.ok) {
+          const errorText = await submitResponse.text();
+          throw new Error(errorText || `Backend error: ${submitResponse.status}`);
+        }
+
+        setStatus("SUCCESS");
       } finally {
         clearTimeout(timeoutId);
       }
-
-      if (submitResponse && !submitResponse.ok) {
-        const errorText = await submitResponse.text();
-        console.error("[DPI] Backend returned non-200:", submitResponse.status, errorText);
-      }
-
-      setStatus("SUCCESS");
     } catch (error: unknown) {
       console.error("[VISUAL CLAIM] Pipeline failure:", error);
       setErrorMessage(getErrorMessage(error));
@@ -353,7 +355,7 @@ export function VisualClaimCamera() {
             key={card.type}
             id={`damage-card-${card.type.toLowerCase()}`}
             onClick={() => handleCardClick(card.type)}
-            disabled={isProcessing}
+            disabled={isProcessing || !farmerId}
             aria-label={`${card.label} damage`}
             aria-pressed={selectedType === card.type}
             className={`
@@ -362,7 +364,7 @@ export function VisualClaimCamera() {
               ${selectedType === card.type
                 ? `bg-white/10 ring-1 ring-primary/60 ${card.glow}`
                 : "bg-white/5 hover:bg-white/8"}
-              ${isProcessing ? "cursor-not-allowed opacity-40" : "cursor-pointer"}
+              ${isProcessing || !farmerId ? "cursor-not-allowed opacity-40" : "cursor-pointer"}
             `}
           >
             <div className={`absolute inset-0 bg-gradient-to-br ${card.accent}`} />
