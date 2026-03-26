@@ -1,41 +1,62 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# TerraNode Hackathon Environment
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
+# =========================
+# 1. Credentials & Secrets (CRITICAL)
+# =========================
+.env
+.env.*
 *.pem
+*.key
+*.cert
+*.jks
 
-# debug
+# =========================
+# 2. Node & Next.js (Frontend)
+# =========================
+node_modules/
+.next/
+out/
+build/
+.vercel
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# =========================
+# 3. Java & Spring Boot (Backend)
+# =========================
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+.mvn/
+hs_err_pid*
+replay_pid*
 
-# vercel
-.vercel
+# =========================
+# 4. Cryptography (zk-SNARKs)
+# =========================
+# (Ignore giant intermediate circuit artifacts if applicable, but commit the final .wasm/.zkey if needed by UI)
+# *.ptau
+# *.r1cs
+# *.wtns
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# =========================
+# 5. OS & IDE Configuration
+# =========================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+*.iws
+
+# =========================
+# 6. Database & Docker
+# =========================
+postgres_data/
+pgdata/
+docker-volume/
