@@ -1,0 +1,62 @@
+# TerraNode Hackathon Environment
+
+# =========================
+# 1. Credentials & Secrets (CRITICAL)
+# =========================
+.env
+.env.*
+*.pem
+*.key
+*.cert
+*.jks
+
+# =========================
+# 2. Node & Next.js (Frontend)
+# =========================
+node_modules/
+.next/
+out/
+build/
+.vercel
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# 3. Java & Spring Boot (Backend)
+# =========================
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+.mvn/
+hs_err_pid*
+replay_pid*
+
+# =========================
+# 4. Cryptography (zk-SNARKs)
+# =========================
+# (Ignore giant intermediate circuit artifacts if applicable, but commit the final .wasm/.zkey if needed by UI)
+# *.ptau
+# *.r1cs
+# *.wtns
+
+# =========================
+# 5. OS & IDE Configuration
+# =========================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+*.iws
+
+# =========================
+# 6. Database & Docker
+# =========================
+postgres_data/
+pgdata/
+docker-volume/

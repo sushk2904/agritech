@@ -95,7 +95,7 @@ Three-layer fraud detection using `gemini-flash-latest`:
 ```
 spring.datasource.url=jdbc:postgresql://postgres-postgis:5432/agristack
 spring.datasource.username=postgres / password=postgres
-gemini.api.key=AIzaSyDh8Sp8-RT22dErvoLKvq2gdj4ecTd0drw
+gemini.api.key=Your key
 ```
 
 #### [src/main/resources/data.sql](file:///c:/Users/Saksham/OneDrive/Desktop/Hackathon/agritech/backend/src/main/resources/data.sql)
