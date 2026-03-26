@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up | AgriTech</title>
+    <meta
+      name="description"
+      content="Sign up preview for the AgriTech frontend experience."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-theme="dark">
+    <div class="page-noise" aria-hidden="true"></div>
+    <div class="page-halo page-halo-left" aria-hidden="true"></div>
+    <div class="page-halo page-halo-right" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="brand-mark">A</div>
+        <div>
+          <p class="brand-name">AgriTech</p>
+          <p class="brand-caption" data-i18n="brandCaption">Frontend preview</p>
+        </div>
+      </div>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="./index.html" data-nav data-i18n="navHome">Home</a>
+        <a href="./about.html" data-nav data-i18n="navAbout">About</a>
+        <a href="./project.html" data-nav data-i18n="navProject">Project</a>
+        <a href="./login.html" data-nav data-i18n="navLogin">Login</a>
+        <a href="./signup.html" data-nav data-i18n="navSignup">Sign Up</a>
+      </nav>
+
+      <div class="toolbar">
+        <div class="language-switch" role="group" aria-label="Language switcher">
+          <button class="lang-btn active" data-lang="en" type="button">EN</button>
+          <button class="lang-btn" data-lang="hi" type="button">HI</button>
+        </div>
+
+        <button id="themeToggle" class="theme-toggle" type="button" aria-live="polite">
+          <span class="theme-toggle-label" data-i18n="themeDark">Dark mode</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="auth-layout section-shell">
+        <article class="auth-panel">
+          <p class="eyebrow" data-i18n="signupEyebrow">New access</p>
+          <h1 data-i18n="signupTitle">Create an AgriTech account and enter the working platform.</h1>
+          <p class="page-lead" data-i18n="signupLead">
+            The signup page keeps the entry process simple while still feeling aligned with the secure,
+            multilingual product experience.
+          </p>
+
+          <div class="surface-card">
+            <p class="card-kicker" data-i18n="signupPanelKicker">Why sign up</p>
+            <h2 data-i18n="signupPanelTitle">A smoother start for every user role.</h2>
+            <p data-i18n="signupPanelText">
+              Use this for first-time farmers, partner staff, or demo judges who need an account shell before entering the project space.
+            </p>
+
+            <ul class="auth-point-list">
+              <li class="signal-row">
+                <strong data-i18n="signupPointOneTitle">Language-first onboarding</strong>
+                <p data-i18n="signupPointOneText">Users pick their preferred language before they begin the claim journey.</p>
+              </li>
+              <li class="signal-row">
+                <strong data-i18n="signupPointTwoTitle">Role-aware account setup</strong>
+                <p data-i18n="signupPointTwoText">The experience stays flexible for farmers, officers, and demo operators.</p>
+              </li>
+              <li class="signal-row">
+                <strong data-i18n="signupPointThreeTitle">Ready for backend wiring</strong>
+                <p data-i18n="signupPointThreeText">The form can later map directly to your real signup and token endpoints.</p>
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="auth-card">
+          <p class="card-kicker" data-i18n="signupFormKicker">Account creation</p>
+          <h2 data-i18n="signupFormTitle">Sign up</h2>
+          <p data-i18n="signupFormText">Use the mock form below to preview the new-account flow.</p>
+
+          <form class="form-grid" data-demo-form="signup" data-result-key="signupSuccess">
+            <div class="field">
+              <label for="signup-name" data-i18n="fieldName">Full name</label>
+              <input
+                id="signup-name"
+                type="text"
+                data-i18n-placeholder="placeholderName"
+                placeholder="Anita Verma"
+              />
+            </div>
+
+            <div class="field">
+              <label for="signup-contact" data-i18n="fieldContact">Email or mobile</label>
+              <input
+                id="signup-contact"
+                type="text"
+                data-i18n-placeholder="placeholderContact"
+                placeholder="+91 98765 43210"
+              />
+            </div>
+
+            <div class="field">
+              <label for="signup-language" data-i18n="fieldLanguage">Preferred language</label>
+              <select id="signup-language">
+                <option value="en" data-i18n="languageEnglish">English</option>
+                <option value="hi" data-i18n="languageHindi">Hindi</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="signup-password" data-i18n="fieldPasswordCreate">Create password</label>
+              <input
+                id="signup-password"
+                type="password"
+                data-i18n-placeholder="placeholderPasswordCreate"
+                placeholder="Create a secure password"
+              />
+            </div>
+
+            <button class="button button-primary" type="submit" data-i18n="signupSubmit">
+              Create account
+            </button>
+          </form>
+
+          <p class="form-result" data-demo-result="signup" hidden></p>
+          <p class="form-caption">
+            <span data-i18n="signupSwitchText">Already have an account?</span>
+            <a class="text-link" href="./login.html" data-i18n="signupSwitchLink">Go to login</a>
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p data-i18n="footerText">AgriTech frontend preview crafted for a high-trust, multilingual crop insurance experience.</p>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

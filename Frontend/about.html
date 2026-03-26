@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About AgriTech</title>
+    <meta
+      name="description"
+      content="About the AgriTech platform, its purpose, and the core layers behind the experience."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-theme="dark">
+    <div class="page-noise" aria-hidden="true"></div>
+    <div class="page-halo page-halo-left" aria-hidden="true"></div>
+    <div class="page-halo page-halo-right" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="brand-mark">A</div>
+        <div>
+          <p class="brand-name">AgriTech</p>
+          <p class="brand-caption" data-i18n="brandCaption">Frontend preview</p>
+        </div>
+      </div>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="./index.html" data-nav data-i18n="navHome">Home</a>
+        <a href="./about.html" data-nav data-i18n="navAbout">About</a>
+        <a href="./project.html" data-nav data-i18n="navProject">Project</a>
+        <a href="./login.html" data-nav data-i18n="navLogin">Login</a>
+        <a href="./signup.html" data-nav data-i18n="navSignup">Sign Up</a>
+      </nav>
+
+      <div class="toolbar">
+        <div class="language-switch" role="group" aria-label="Language switcher">
+          <button class="lang-btn active" data-lang="en" type="button">EN</button>
+          <button class="lang-btn" data-lang="hi" type="button">HI</button>
+        </div>
+
+        <button id="themeToggle" class="theme-toggle" type="button" aria-live="polite">
+          <span class="theme-toggle-label" data-i18n="themeDark">Dark mode</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="page-hero section-shell">
+        <div class="page-copy">
+          <p class="eyebrow" data-i18n="aboutEyebrow">Platform story</p>
+          <h1 data-i18n="aboutTitle">AgriTech is designed to make high-trust crop insurance feel clear and human.</h1>
+          <p class="page-lead" data-i18n="aboutLead">
+            It combines multilingual guidance, secure claim handoff, AI-assisted verification, and
+            an operator-ready view so both farmers and institutions can move with confidence.
+          </p>
+
+          <div class="page-actions">
+            <a class="button button-primary" href="./project.html" data-i18n="aboutPrimaryAction">
+              Explore project workspace
+            </a>
+            <a class="button button-secondary" href="./signup.html" data-i18n="aboutSecondaryAction">
+              Create an account
+            </a>
+          </div>
+        </div>
+
+        <article class="page-hero-card">
+          <p class="card-kicker" data-i18n="aboutCardKicker">Why it matters</p>
+          <h2 data-i18n="aboutCardTitle">One experience for farmers, field officers, and the backend team.</h2>
+          <p data-i18n="aboutCardText">
+            The same frontend can explain the product, capture a claim, and surface proof, payout,
+            and accountability states for review.
+          </p>
+
+          <div class="page-stat-grid">
+            <div class="page-stat">
+              <strong>4</strong>
+              <span data-i18n="aboutStatOne">core trust layers</span>
+            </div>
+            <div class="page-stat">
+              <strong>2</strong>
+              <span data-i18n="aboutStatTwo">live languages in preview</span>
+            </div>
+            <div class="page-stat">
+              <strong>1</strong>
+              <span data-i18n="aboutStatThree">unified frontend direction</span>
+            </div>
+            <div class="page-stat">
+              <strong>24/7</strong>
+              <span data-i18n="aboutStatFour">status visibility mindset</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="page-section section-shell">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="aboutPrinciplesKicker">Design principles</p>
+          <h2 data-i18n="aboutPrinciplesTitle">The experience is built around clarity, trust, and action.</h2>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3 data-i18n="aboutPrincipleOneTitle">Explain before asking</h3>
+            <p data-i18n="aboutPrincipleOneText">
+              The interface makes each next step obvious so users feel guided instead of tested.
+            </p>
+          </article>
+          <article class="feature-card">
+            <h3 data-i18n="aboutPrincipleTwoTitle">Show trust visually</h3>
+            <p data-i18n="aboutPrincipleTwoText">
+              Security and verification states are visible in plain language, not hidden in technical jargon.
+            </p>
+          </article>
+          <article class="feature-card">
+            <h3 data-i18n="aboutPrincipleThreeTitle">Support multiple roles</h3>
+            <p data-i18n="aboutPrincipleThreeText">
+              Farmers, operators, and judges can all understand the product from the same frontend system.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="page-section section-shell">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="aboutStackKicker">Platform layers</p>
+          <h2 data-i18n="aboutStackTitle">The frontend explains how the real AgriTech system fits together.</h2>
+        </div>
+
+        <div class="architecture-grid">
+          <article class="surface-card stack-card">
+            <p class="card-kicker" data-i18n="aboutStackOneKicker">Guidance</p>
+            <h3 data-i18n="aboutStackOneTitle">Multilingual claim guidance</h3>
+            <p data-i18n="aboutStackOneText">
+              Farmers can move through claim flows using familiar language and clear prompts.
+            </p>
+          </article>
+          <article class="surface-card stack-card">
+            <p class="card-kicker" data-i18n="aboutStackTwoKicker">Privacy</p>
+            <h3 data-i18n="aboutStackTwoTitle">Secure proof and identity handoff</h3>
+            <p data-i18n="aboutStackTwoText">
+              The UI presents proof, token, and encrypted transfer states without overwhelming the user.
+            </p>
+          </article>
+          <article class="surface-card stack-card">
+            <p class="card-kicker" data-i18n="aboutStackThreeKicker">Intelligence</p>
+            <h3 data-i18n="aboutStackThreeTitle">AI-verified geofencing and status insight</h3>
+            <p data-i18n="aboutStackThreeText">
+              Damage zones, review progress, and payout readiness are shown as simple visual milestones.
+            </p>
+          </article>
+          <article class="surface-card stack-card">
+            <p class="card-kicker" data-i18n="aboutStackFourKicker">Operations</p>
+            <h3 data-i18n="aboutStackFourTitle">Operator-ready project workspace</h3>
+            <p data-i18n="aboutStackFourText">
+              Field activity, notifications, and backend sync points are visible in one place.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta-panel section-shell">
+        <div>
+          <p class="section-kicker" data-i18n="aboutCtaKicker">Next step</p>
+          <h2 data-i18n="aboutCtaTitle">Move from the story into the actual project workspace.</h2>
+        </div>
+        <p class="cta-copy" data-i18n="aboutCtaText">
+          The project page is where the claim flow, map zone, and backend-facing states come together.
+        </p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p data-i18n="footerText">AgriTech frontend preview crafted for a high-trust, multilingual crop insurance experience.</p>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

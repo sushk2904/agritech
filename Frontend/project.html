@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Workspace | AgriTech</title>
+    <meta
+      name="description"
+      content="AgriTech project workspace preview where the actual product flow takes place."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-theme="dark">
+    <div class="page-noise" aria-hidden="true"></div>
+    <div class="page-halo page-halo-left" aria-hidden="true"></div>
+    <div class="page-halo page-halo-right" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="brand-mark">A</div>
+        <div>
+          <p class="brand-name">AgriTech</p>
+          <p class="brand-caption" data-i18n="brandCaption">Frontend preview</p>
+        </div>
+      </div>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="./index.html" data-nav data-i18n="navHome">Home</a>
+        <a href="./about.html" data-nav data-i18n="navAbout">About</a>
+        <a href="./project.html" data-nav data-i18n="navProject">Project</a>
+        <a href="./login.html" data-nav data-i18n="navLogin">Login</a>
+        <a href="./signup.html" data-nav data-i18n="navSignup">Sign Up</a>
+      </nav>
+
+      <div class="toolbar">
+        <div class="language-switch" role="group" aria-label="Language switcher">
+          <button class="lang-btn active" data-lang="en" type="button">EN</button>
+          <button class="lang-btn" data-lang="hi" type="button">HI</button>
+        </div>
+
+        <button id="themeToggle" class="theme-toggle" type="button" aria-live="polite">
+          <span class="theme-toggle-label" data-i18n="themeDark">Dark mode</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="project-hero section-shell">
+        <div class="page-copy">
+          <p class="eyebrow" data-i18n="projectEyebrow">Live workspace</p>
+          <h1 data-i18n="projectTitle">This is where the real AgriTech product flow takes place.</h1>
+          <p class="page-lead" data-i18n="projectLead">
+            Claim guidance, map verification, backend sync states, and accountability updates all live together here.
+          </p>
+
+          <div class="page-actions">
+            <a class="button button-primary" href="#workspace" data-i18n="projectPrimaryAction">
+              Start in workspace
+            </a>
+            <a class="button button-secondary" href="./login.html" data-i18n="projectSecondaryAction">
+              Login for access
+            </a>
+          </div>
+        </div>
+
+        <article class="page-hero-card">
+          <div class="project-topline">
+            <div>
+              <p class="card-kicker" data-i18n="projectHeroKicker">Workspace snapshot</p>
+              <h2 data-i18n="projectHeroTitle">Farmer, map, and operator states in one view.</h2>
+            </div>
+            <span class="status-chip">
+              <span class="status-dot"></span>
+              <span data-i18n="projectHeroChip">Preview mode active</span>
+            </span>
+          </div>
+
+          <div class="mini-metric-grid">
+            <div class="mini-metric">
+              <strong>18</strong>
+              <span data-i18n="projectMetricOne">claims in queue</span>
+            </div>
+            <div class="mini-metric">
+              <strong>06</strong>
+              <span data-i18n="projectMetricTwo">zones under review</span>
+            </div>
+            <div class="mini-metric">
+              <strong>92%</strong>
+              <span data-i18n="projectMetricThree">workflow completion clarity</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="project-dashboard section-shell" id="workspace">
+        <aside class="workspace-sidebar">
+          <article class="workspace-card">
+            <p class="card-kicker" data-i18n="projectSidebarKicker">Current user</p>
+            <h2 data-i18n="projectSidebarTitle">Farmer-side workspace shell</h2>
+            <p data-i18n="projectSidebarText">
+              A guided surface for damage reporting, progress review, and language-aware updates.
+            </p>
+
+            <ul class="action-list">
+              <li class="action-pill">
+                <strong data-i18n="projectActionOneTitle">Claim intake</strong>
+                <p data-i18n="projectActionOneText">Start the guided conversation and capture the incident.</p>
+              </li>
+              <li class="action-pill">
+                <strong data-i18n="projectActionTwoTitle">Status tracking</strong>
+                <p data-i18n="projectActionTwoText">Follow proof, review, and payout movement in simple stages.</p>
+              </li>
+              <li class="action-pill">
+                <strong data-i18n="projectActionThreeTitle">Localized updates</strong>
+                <p data-i18n="projectActionThreeText">Keep the user informed with clear language-aware notices.</p>
+              </li>
+            </ul>
+          </article>
+        </aside>
+
+        <div class="workspace-main">
+          <article class="workspace-card large">
+            <div class="workspace-header">
+              <div>
+                <p class="card-kicker" data-i18n="composerKicker">Claim workspace</p>
+                <h2 data-i18n="composerTitle">Guided claim composer</h2>
+              </div>
+              <span class="status-chip">
+                <span class="status-dot"></span>
+                <span data-i18n="composerChip">JWT session ready</span>
+              </span>
+            </div>
+
+            <p data-i18n="composerText">
+              The main working area can walk the user through incident capture, confirmation, proof readiness, and submission.
+            </p>
+
+            <div class="step-rail">
+              <div class="checkpoint-item">
+                <div class="checkpoint-number">01</div>
+                <div>
+                  <strong data-i18n="composerStepOneTitle">Pick language and channel</strong>
+                  <p data-i18n="composerStepOneText">Choose Hindi or English and begin with a guided claim flow.</p>
+                </div>
+              </div>
+              <div class="checkpoint-item">
+                <div class="checkpoint-number">02</div>
+                <div>
+                  <strong data-i18n="composerStepTwoTitle">Describe damage</strong>
+                  <p data-i18n="composerStepTwoText">Capture crop, issue type, and field context in a calm step-by-step flow.</p>
+                </div>
+              </div>
+              <div class="checkpoint-item">
+                <div class="checkpoint-number">03</div>
+                <div>
+                  <strong data-i18n="composerStepThreeTitle">Review proof status</strong>
+                  <p data-i18n="composerStepThreeText">Surface geofence match, proof readiness, and secure handoff state.</p>
+                </div>
+              </div>
+              <div class="checkpoint-item">
+                <div class="checkpoint-number">04</div>
+                <div>
+                  <strong data-i18n="composerStepFourTitle">Submit to backend</strong>
+                  <p data-i18n="composerStepFourText">Send the claim packet and start backend-driven status updates.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="composer-actions">
+              <a class="button button-primary" href="./signup.html" data-i18n="composerPrimaryAction">Create a demo claim</a>
+              <a class="button button-secondary" href="./login.html" data-i18n="composerSecondaryAction">Open a secured session</a>
+            </div>
+          </article>
+
+          <article class="workspace-card">
+            <div class="workspace-header">
+              <div>
+                <p class="card-kicker" data-i18n="workspaceMapKicker">Verification map</p>
+                <h3 data-i18n="workspaceMapTitle">Geofence and status layer</h3>
+              </div>
+              <span class="status-chip">
+                <span class="status-dot"></span>
+                <span data-i18n="workspaceMapChip">Flood zone active</span>
+              </span>
+            </div>
+
+            <p data-i18n="workspaceMapText">
+              The map area shows where the claim intersects with the detected zone and how close it is to proof completion.
+            </p>
+
+            <div class="map-surface">
+              <div class="map-grid"></div>
+              <div class="map-zone map-zone-large"></div>
+              <div class="map-zone map-zone-small"></div>
+              <div class="map-point map-point-one"></div>
+              <div class="map-point map-point-two"></div>
+              <div class="map-panel">
+                <p class="card-kicker" data-i18n="workspaceMapPanelKicker">Zone summary</p>
+                <h4 data-i18n="workspaceMapPanelTitle">Proof packet matched to the current disaster zone</h4>
+                <p data-i18n="workspaceMapPanelText">The frontend can explain eligibility and next-step confidence in a simple card.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <aside class="workspace-aside">
+          <article class="workspace-card">
+            <p class="card-kicker" data-i18n="voicePanelKicker">Claim intake</p>
+            <h3 data-i18n="voicePanelTitle">Claim readiness status</h3>
+            <p data-i18n="voicePanelText">
+              This panel can show when farmer details, proof, and backend handoff are ready.
+            </p>
+            <div class="status-wave" aria-hidden="true"></div>
+          </article>
+
+          <article class="workspace-card">
+            <p class="card-kicker" data-i18n="activityKicker">Recent activity</p>
+            <h3 data-i18n="activityTitle">Workspace events</h3>
+            <ul class="notice-list">
+              <li class="notice-item">
+                <strong data-i18n="activityOneTitle">Claim report captured</strong>
+                <p data-i18n="activityOneText">Farmer intent moved into damage-report mode.</p>
+              </li>
+              <li class="notice-item">
+                <strong data-i18n="activityTwoTitle">Proof check complete</strong>
+                <p data-i18n="activityTwoText">The preview marked the geofence verification stage as ready.</p>
+              </li>
+              <li class="notice-item">
+                <strong data-i18n="activityThreeTitle">Backend handoff pending</strong>
+                <p data-i18n="activityThreeText">JWT-secured submission can begin from the main composer.</p>
+              </li>
+            </ul>
+          </article>
+
+          <article class="workspace-card">
+            <p class="card-kicker" data-i18n="noticeKicker">Notifications</p>
+            <h3 data-i18n="noticeTitle">What the user sees next</h3>
+            <ul class="notice-list">
+              <li class="notice-item">
+                <strong data-i18n="noticeOneTitle">Claim received</strong>
+                <p data-i18n="noticeOneText">A localized confirmation can appear immediately after submission.</p>
+              </li>
+              <li class="notice-item">
+                <strong data-i18n="noticeTwoTitle">Zone verified</strong>
+                <p data-i18n="noticeTwoText">The UI can announce proof success without exposing sensitive location data.</p>
+              </li>
+              <li class="notice-item">
+                <strong data-i18n="noticeThreeTitle">Payout update</strong>
+                <p data-i18n="noticeThreeText">The final state can reflect backend payout and accountability messaging.</p>
+              </li>
+            </ul>
+          </article>
+        </aside>
+      </section>
+
+      <section class="project-support-grid section-shell">
+        <article class="workspace-card">
+          <p class="card-kicker" data-i18n="backendKicker">Backend bridge</p>
+          <h3 data-i18n="backendTitle">The frontend surface is ready for your real integration points.</h3>
+          <p data-i18n="backendText">
+            Replace the preview states with your actual login, claim, proof, and status endpoints while keeping the same interface flow.
+          </p>
+          <div class="detail-grid">
+            <div class="insight-item">
+              <strong data-i18n="backendDetailOneTitle">Session</strong>
+              <p data-i18n="backendDetailOneText">JWT creation, refresh, and expiry handling.</p>
+            </div>
+            <div class="insight-item">
+              <strong data-i18n="backendDetailTwoTitle">Claims</strong>
+              <p data-i18n="backendDetailTwoText">Create, fetch, and track claim records from the API.</p>
+            </div>
+            <div class="insight-item">
+              <strong data-i18n="backendDetailThreeTitle">Proof</strong>
+              <p data-i18n="backendDetailThreeText">Show verification progress and confidence states.</p>
+            </div>
+            <div class="insight-item">
+              <strong data-i18n="backendDetailFourTitle">Notifications</strong>
+              <p data-i18n="backendDetailFourText">Surface localized backend messages inside the workspace.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="workspace-card">
+          <p class="card-kicker" data-i18n="payoutKicker">Outcome layer</p>
+          <h3 data-i18n="payoutTitle">The workspace can end with visible accountability.</h3>
+          <p data-i18n="payoutText">
+            Farmers and operators should see the same truth: claim received, validated, reviewed, and moved toward payout.
+          </p>
+          <div class="mini-metric-grid">
+            <div class="mini-metric">
+              <strong>03</strong>
+              <span data-i18n="payoutMetricOne">claims ready for review</span>
+            </div>
+            <div class="mini-metric">
+              <strong>11</strong>
+              <span data-i18n="payoutMetricTwo">localized notices sent</span>
+            </div>
+            <div class="mini-metric">
+              <strong>05</strong>
+              <span data-i18n="payoutMetricThree">payout states visible</span>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p data-i18n="footerText">AgriTech frontend preview crafted for a high-trust, multilingual crop insurance experience.</p>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
