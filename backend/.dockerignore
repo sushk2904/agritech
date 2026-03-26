@@ -1,0 +1,6 @@
+.git
+.m2
+keys
+node_modules
+target
+Dockerfile*
