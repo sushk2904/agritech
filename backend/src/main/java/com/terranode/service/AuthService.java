@@ -28,6 +28,9 @@ public class AuthService {
     private final FarmerRepository farmerRepository;
     private final JavaMailSender mailSender;
 
+    @Value("${spring.mail.username}")
+    private String smtpUser;
+
     // Minimum HMAC key of 256 bits required
     @Value("${jwt.secret:1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7A8B9C0D1E2F}")
     private String jwtSecret;
@@ -68,6 +71,7 @@ public class AuthService {
     private void sendRealEmail(String toEmail, String otp) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(smtpUser);
             message.setTo(toEmail);
             message.setSubject("TerraNode Verification Code");
             message.setText("Your TerraNode AgriStack verification code is: " + otp + "\n\nIt expires in 5 minutes.\n\nDo not share this code with anyone.");
