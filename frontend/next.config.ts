@@ -12,6 +12,18 @@ const withPWA = withPWAInit({
 const nextConfig = {
   reactStrictMode: true,
   turbopack: {},
+  webpack: (config: any, { isServer }: any) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        crypto: false,
+        os: false,
+      };
+    }
+    return config;
+  },
 };
 
 export default withPWA(nextConfig);
