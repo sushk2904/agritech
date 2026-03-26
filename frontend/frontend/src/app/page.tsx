@@ -1,4 +1,9 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { VisualClaimCamera } from "@/components/claims/VisualClaimCamera";
+import { isLoggedIn, clearToken } from "@/lib/terranode-api";
 
 const metrics = [
   { label: "Privacy", value: "ZK protected" },
@@ -7,6 +12,30 @@ const metrics = [
 ];
 
 export default function Home() {
+  const router = useRouter();
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    if (!isLoggedIn()) {
+      router.push("/login");
+    } else {
+      setIsReady(true);
+    }
+  }, [router]);
+
+  if (!isReady) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+
+  const handleLogout = () => {
+    clearToken();
+    router.push("/login");
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div className="pointer-events-none absolute inset-0">
@@ -15,6 +44,15 @@ export default function Home() {
       </div>
 
       <main className="relative mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 py-10 lg:px-8 lg:py-12">
+        <div className="absolute right-6 top-6 lg:right-8 lg:top-8">
+          <button
+            onClick={handleLogout}
+            className="text-sm uppercase tracking-wider text-white/50 hover:text-white"
+          >
+            Logout
+          </button>
+        </div>
+
         <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-mono text-[0.7rem] uppercase tracking-[0.24em] text-white/62">
             <span className="h-2 w-2 rounded-full bg-primary" />
