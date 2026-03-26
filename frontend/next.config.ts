@@ -1,4 +1,6 @@
 import withPWAInit from "@ducanh2912/next-pwa";
+import type { NextConfig } from "next";
+import type { Configuration } from "webpack";
 
 const withPWA = withPWAInit({
   dest: "public",
@@ -8,18 +10,22 @@ const withPWA = withPWAInit({
   aggressiveFrontEndNavCaching: true,
 });
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactStrictMode: true,
-  turbopack: {},
-  webpack: (config: any, { isServer }: any) => {
+  turbopack: {
+    root: process.cwd(),
+  },
+  webpack: (config: Configuration, { isServer }) => {
     if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        path: false,
-        crypto: false,
-        os: false,
+      config.resolve = {
+        ...config.resolve,
+        fallback: {
+          ...config.resolve?.fallback,
+          fs: false,
+          path: false,
+          crypto: false,
+          os: false,
+        },
       };
     }
     return config;

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # ==============================================================================
   # BASE LAYER: The Cryptographic Data Vault
@@ -37,7 +35,7 @@ services:
     ports:
       - "8000:8000"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -63,14 +61,28 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-postgis:5432/agristack
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
+      # SMTP Email Gateway
+      - SPRING_MAIL_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SPRING_MAIL_PORT=${SMTP_PORT:-587}
+      - SPRING_MAIL_USERNAME=${SMTP_USER:-}
+      - SPRING_MAIL_PASSWORD=${SMTP_PASS:-}
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+      # Google Gemini Vision API Key for Fraud Detection
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/api/v1/crypto/public-key >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
     depends_on:
       postgres-postgis:
         condition: service_healthy
     command: mvn spring-boot:run
 
   # ==============================================================================
-  # ACCESSIBILITY LAYER: The Bhashini Voice Client
-  # Next.js React PWA locally compiled mapped natively to JVM Gateway
+  # EXPERIENCE LAYER: Minimal Judge-Facing Frontend
+  # Next.js React PWA mapped to the secure claim flow
   # ==============================================================================
   frontend:
     build:
@@ -85,10 +97,19 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+      - NEXT_TELEMETRY_DISABLED=1
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then((res) => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
     command: >
-      sh -c "npm install && npm run dev"
+      sh -c "npm install && npm run dev -- --hostname 0.0.0.0 --port 3000"
     depends_on:
-      - backend
+      backend:
+        condition: service_started
 
 volumes:
   terranode_pgdata:

@@ -42,7 +42,8 @@ public class GeminiConfidenceService {
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent";
 
     // Minimum Gemini AI confidence required for claim approval (aligned with >93% Kappa target)
-    private static final double MIN_AI_CONFIDENCE_THRESHOLD = 0.70;
+    // Increased from 0.70 to 0.85 to make the verification gate significantly stronger.
+    private static final double MIN_AI_CONFIDENCE_THRESHOLD = 0.85;
 
     // Minimum spatial satellite confidence (from Python microservice)
     private static final double MIN_SPATIAL_CONFIDENCE_THRESHOLD = 0.60;
@@ -179,15 +180,18 @@ public class GeminiConfidenceService {
                   - GAN artifacts: repeating patterns, melting edges, impossible geometry
                   - Diffusion model artifacts: over-sharpened details, unnaturally perfect composition
                   - Stock photo watermarks or signs of stock imagery
-                  - Metadata inconsistencies (you may infer from visual quality)
                   If you detect ANY of these signals, set is_ai_generated: true. This is an AUTOMATIC REJECTION.
                   
-                  FRAUD CHECK 2 — DAMAGE TYPE CONSISTENCY:
-                  Verify the photo VISUALLY matches the claimed damage type: %s
+                  FRAUD CHECK 2 — ENVIRONMENTAL IRRELEVANCY (CRITICAL):
+                  The photo MUST depict an outdoor agricultural field, crops, or farming environment. 
+                  If the photo shows an indoor room, a person's face, a screenshot of a device, a piece of paper, or any non-farm environment, you MUST immediately set damage_type_match: false.
+                  
+                  FRAUD CHECK 3 — DAMAGE TYPE CONSISTENCY:
+                  Verify the photo VISUALLY MATCHES the claimed damage type exactly: %s
                   - FLOOD: standing water, waterlogged soil, submerged crops, mud deposits
                   - DROUGHT: cracked dry earth, wilted/brown crops, parched soil, dust
                   - PEST: localized crop discolouration, insect damage patterns, irregular holes in leaves
-                  If the visual content contradicts the claimed damage type, set damage_type_match: false.
+                  If the visual content contradicts the claimed damage type, or lacks clear physical evidence of the claimed damage, set damage_type_match: false.
                   """.formatted(damageType)
                 : """
                   No image was provided. You must evaluate based on the satellite data alone.
