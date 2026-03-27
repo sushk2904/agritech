@@ -27,10 +27,10 @@ export function AppFrame({ children }) {
     useSiteState();
   const themeLabel = theme === "dark" ? copy.common.theme.dark : copy.common.theme.light;
   const visibleNavItems = isAuthenticated
-    ? NAV_ITEMS.filter((item) => item.href !== "/login" && item.href !== "/signup")
+    ? NAV_ITEMS.filter((item) => item.href === "/" || item.href === "/project")
     : NAV_ITEMS;
   const sessionLabel = session?.fullName || session?.email || "Session active";
-  const sessionMeta = session?.email && session?.fullName ? session.email : "";
+  const sessionTitle = session?.fullName && session?.email ? `${session.fullName} (${session.email})` : sessionLabel;
 
   return (
     <>
@@ -63,10 +63,9 @@ export function AppFrame({ children }) {
 
         <div className="toolbar">
           {isAuthenticated ? (
-            <div className="session-chip" title={sessionLabel}>
+            <div className="session-chip" title={sessionTitle}>
               <span className="session-dot" aria-hidden="true" />
               <span className="session-email">{sessionLabel}</span>
-              {sessionMeta ? <span className="session-meta">{sessionMeta}</span> : null}
               <button
                 type="button"
                 className="session-action"
