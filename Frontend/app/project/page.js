@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Reveal } from "../../components/reveal";
 import { useSiteState } from "../../components/site-state";
 import {
   DEMO_HASHED_FARMER_ID,
@@ -25,6 +24,15 @@ const DAMAGE_TYPES = {
     { value: "DROUGHT", label: "सूखा" },
     { value: "PEST", label: "कीट" }
   ]
+};
+
+const PROCESS_STAGE_INDEX = {
+  FETCHING_KEY: 1,
+  HASHING: 2,
+  GENERATING_PROOF: 3,
+  ENCRYPTING: 4,
+  SUBMITTING: 5,
+  SUCCESS: 5
 };
 
 const PIPELINE_STATUS_LABELS = {
@@ -53,16 +61,11 @@ const PIPELINE_STATUS_LABELS = {
 const PROJECT_UI_COPY = {
   en: {
     eyebrow: "Secure workspace",
-    heroTitleAuthenticated: "Welcome back",
-    heroLeadAuthenticated: "Only the core claim tools stay here now.",
+    heroTitleAuthenticated: "Claim card",
+    heroLeadAuthenticated: "Choose Flood, Drought, or Pest, then upload one image to start the claim.",
     heroTitleGuest: "Sign in to open the secure claim workspace.",
     heroLeadGuest: "Email OTP unlocks the profile, plot lookup, and encrypted claim flow.",
     signedInAs: "Signed in as",
-    summaryLabels: {
-      access: "Access",
-      plot: "Plot",
-      security: "Security"
-    },
     states: {
       live: "Live",
       ready: "Ready",
@@ -82,36 +85,33 @@ const PROJECT_UI_COPY = {
     workspaceReadyPrefix: "Workspace ready:",
     workspaceLocked: "Sign in to load the profile, plot, and secure claim tools.",
     claimTitle: "Submit claim",
-    claimLead: "Choose one damage type, attach one image, and send the encrypted bundle.",
+    claimLead: "Only the main claim flow is shown here.",
     selectedEvidence: "Selected evidence",
     noEvidence: "No file selected",
-    plotStatus: "Plot status",
-    plotPendingShort: "Waiting for plot",
-    plotLoadedShort: "Plot loaded",
     latestStatus: "Latest status",
-    uploadAction: "Upload evidence",
+    uploadAction: "Upload image",
     loginAction: "Open login",
-    refreshAction: "Refresh",
-    refreshingAction: "Refreshing...",
-    identityLabel: "Account",
-    plotLabel: "Plot",
-    securityLabel: "Security",
+    processTitle: "Claim process",
+    processWaiting: "The claim process will appear after you upload an image.",
+    processSteps: [
+      "Image added",
+      "Secure key",
+      "Image hash",
+      "Proof bundle",
+      "Encryption",
+      "Submission"
+    ],
     plotUnavailable: "Live plot coordinates are not loaded yet.",
     vertexLabel: "vertices",
     polygonFallback: "Polygon"
   },
   hi: {
     eyebrow: "Secure workspace",
-    heroTitleAuthenticated: "Welcome back",
-    heroLeadAuthenticated: "अब यहां सिर्फ मुख्य claim tools रखे गए हैं।",
+    heroTitleAuthenticated: "Claim card",
+    heroLeadAuthenticated: "Flood, Drought ya Pest चुनें, फिर claim शुरू करने के लिए एक image upload करें।",
     heroTitleGuest: "Secure claim workspace खोलने के लिए sign in करें।",
     heroLeadGuest: "Email OTP से profile, plot lookup और encrypted claim flow खुलेगा।",
     signedInAs: "Signed in as",
-    summaryLabels: {
-      access: "Access",
-      plot: "Plot",
-      security: "Security"
-    },
     states: {
       live: "Live",
       ready: "Ready",
@@ -131,40 +131,27 @@ const PROJECT_UI_COPY = {
     workspaceReadyPrefix: "Workspace ready:",
     workspaceLocked: "Profile, plot और secure claim tools देखने के लिए sign in करें।",
     claimTitle: "Claim submit करें",
-    claimLead: "एक damage type चुनें, एक image जोड़ें, और encrypted bundle भेजें।",
+    claimLead: "यहां सिर्फ मुख्य claim flow दिखाया गया है।",
     selectedEvidence: "Selected evidence",
     noEvidence: "कोई file selected नहीं है",
-    plotStatus: "Plot status",
-    plotPendingShort: "Plot pending",
-    plotLoadedShort: "Plot loaded",
     latestStatus: "Latest status",
-    uploadAction: "Evidence upload करें",
+    uploadAction: "Image upload करें",
     loginAction: "Login खोलें",
-    refreshAction: "Refresh",
-    refreshingAction: "Refreshing...",
-    identityLabel: "Account",
-    plotLabel: "Plot",
-    securityLabel: "Security",
+    processTitle: "Claim process",
+    processWaiting: "Image upload करने के बाद claim process यहां दिखेगा।",
+    processSteps: [
+      "Image added",
+      "Secure key",
+      "Image hash",
+      "Proof bundle",
+      "Encryption",
+      "Submission"
+    ],
     plotUnavailable: "Live plot coordinates अभी load नहीं हुई हैं।",
     vertexLabel: "vertices",
     polygonFallback: "Polygon"
   }
 };
-
-function getVertexCount(plot) {
-  const firstRing = plot?.coordinates?.[0];
-  return Array.isArray(firstRing) ? firstRing.length : 0;
-}
-
-function getPlotSummary(plot, text) {
-  const vertexCount = getVertexCount(plot);
-
-  if (!vertexCount) {
-    return text.plotUnavailable;
-  }
-
-  return `${plot.type || text.polygonFallback} | ${vertexCount} ${text.vertexLabel}`;
-}
 
 function getUniqueCandidates(values) {
   return [...new Set(values.filter((value) => typeof value === "string" && value.trim()))];
@@ -188,10 +175,9 @@ export default function ProjectPage() {
   const [plot, setPlot] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loadingWorkspace, setLoadingWorkspace] = useState(false);
+  const [processStageIndex, setProcessStageIndex] = useState(-1);
 
   const hashedFarmerId = session?.hashedFarmerId || DEMO_HASHED_FARMER_ID;
-  const plotSummary = useMemo(() => getPlotSummary(plot, text), [plot, text]);
-  const plotVertexCount = useMemo(() => getVertexCount(plot), [plot]);
   const displayName = profile?.fullName || session?.fullName || "Verified Farmer";
   const displayEmail = profile?.email || session?.email || "Not available";
 
@@ -298,7 +284,11 @@ export default function ProjectPage() {
   }, [isAuthenticated, session?.token, hashedFarmerId]);
 
   const latestStatus =
-    claimResponse || workspaceError || workspaceStatus || pipelineLabels[pipelineStatus] || pipelineLabels.IDLE;
+    claimResponse ||
+    workspaceError ||
+    (processStageIndex >= 0
+      ? pipelineLabels[pipelineStatus] || pipelineLabels.IDLE
+      : text.processWaiting || workspaceStatus || pipelineLabels.IDLE);
 
   const latestStatusClassName = claimResponse
     ? "form-result"
@@ -306,20 +296,8 @@ export default function ProjectPage() {
       ? "form-status form-status-error"
       : "form-status form-status-neutral";
 
-  const summaryStats = [
-    {
-      label: text.summaryLabels.access,
-      value: isAuthenticated ? text.states.live : text.states.otp
-    },
-    {
-      label: text.summaryLabels.plot,
-      value: plot ? text.states.ready : isAuthenticated ? text.states.pending : text.states.locked
-    },
-    {
-      label: text.summaryLabels.security,
-      value: publicKeyBase64 ? text.states.ready : isAuthenticated ? text.states.pending : text.states.locked
-    }
-  ];
+  const processSteps = text.processSteps || [];
+  const showProcess = processStageIndex >= 0;
 
   const handleClaimButtonClick = () => {
     if (!isAuthenticated) {
@@ -341,12 +319,14 @@ export default function ProjectPage() {
     setPipelineStatus("IDLE");
     setClaimResponse("");
     setWorkspaceError("");
+    setProcessStageIndex(0);
 
     try {
       let activePublicKey = publicKeyBase64;
 
       if (!activePublicKey) {
         setPipelineStatus("FETCHING_KEY");
+        setProcessStageIndex(PROCESS_STAGE_INDEX.FETCHING_KEY);
         activePublicKey = await fetchPublicKey();
         setPublicKeyBase64(activePublicKey);
       }
@@ -356,13 +336,18 @@ export default function ProjectPage() {
         damageType: selectedDamageType,
         hashedFarmerId,
         publicKeyBase64: activePublicKey,
-        onStageChange: setPipelineStatus
+        onStageChange: (stage) => {
+          setPipelineStatus(stage);
+          setProcessStageIndex(PROCESS_STAGE_INDEX[stage] ?? 0);
+        }
       });
 
       setPipelineStatus("SUBMITTING");
+      setProcessStageIndex(PROCESS_STAGE_INDEX.SUBMITTING);
       const responseText = await submitClaimBundle(bundle, session?.token);
       setClaimResponse(responseText);
       setPipelineStatus("SUCCESS");
+      setProcessStageIndex(PROCESS_STAGE_INDEX.SUCCESS);
       setWorkspaceStatus("Secure claim flow completed against the backend.");
     } catch (error) {
       setPipelineStatus("ERROR");
@@ -376,15 +361,15 @@ export default function ProjectPage() {
 
   return (
     <main className="page-main page-shell">
-      <Reveal className="project-minimal-shell">
+      <section className="project-minimal-shell">
         <section className="minimal-single-column">
           <article className="workspace-card minimal-primary-card">
             <div className="minimal-topline">
               <div className="minimal-copy">
                 <p className="eyebrow">{text.eyebrow}</p>
-                <h1>{isAuthenticated ? `${text.heroTitleAuthenticated}, ${displayName}` : text.heroTitleGuest}</h1>
+                <h1>{isAuthenticated ? text.heroTitleAuthenticated : text.heroTitleGuest}</h1>
                 <p className="page-lead minimal-lead">
-                  {isAuthenticated ? `${text.signedInAs} ${displayEmail}` : text.heroLeadGuest}
+                  {isAuthenticated ? text.heroLeadAuthenticated : text.heroLeadGuest}
                 </p>
               </div>
 
@@ -393,32 +378,7 @@ export default function ProjectPage() {
               </span>
             </div>
 
-            <div className="minimal-summary-strip" aria-label="Workspace summary">
-              {summaryStats.map((item) => (
-                <article key={item.label} className="minimal-summary-item">
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                </article>
-              ))}
-            </div>
-
-            <div className="minimal-focus-strip">
-              <div className="minimal-focus-item">
-                <span>{text.identityLabel}</span>
-                <strong>{displayName}</strong>
-                <p>{displayEmail}</p>
-              </div>
-              <div className="minimal-focus-item">
-                <span>{text.plotLabel}</span>
-                <strong>{plot ? `${plotVertexCount} ${text.vertexLabel}` : text.plotPendingShort}</strong>
-                <p>{plotSummary}</p>
-              </div>
-              <div className="minimal-focus-item">
-                <span>{text.securityLabel}</span>
-                <strong>{publicKeyBase64 ? text.states.ready : text.states.pending}</strong>
-                <p>{claimResponse || pipelineLabels[pipelineStatus] || latestStatus}</p>
-              </div>
-            </div>
+            {isAuthenticated ? <p className="minimal-signed-in">{`${text.signedInAs} ${displayEmail}`}</p> : null}
 
             <div className="damage-selector" role="group" aria-label="Select damage type">
               {damageTypes.map((type) => (
@@ -441,36 +401,52 @@ export default function ProjectPage() {
               onChange={handleFileSelected}
             />
 
-            <div className="minimal-evidence-grid">
-              <div className="minimal-evidence-card">
-                <span>{text.selectedEvidence}</span>
-                <strong>{selectedFileName || text.noEvidence}</strong>
+            {selectedFileName ? (
+              <div className="minimal-evidence-grid">
+                <div className="minimal-evidence-card">
+                  <span>{text.selectedEvidence}</span>
+                  <strong>{selectedFileName}</strong>
+                </div>
               </div>
-            </div>
+            ) : null}
 
             <div className="hero-actions minimal-actions">
               <button type="button" className="button button-primary" onClick={handleClaimButtonClick}>
                 {isAuthenticated ? text.uploadAction : text.loginAction}
               </button>
-              <button
-                type="button"
-                className="button button-secondary"
-                onClick={() => {
-                  refreshWorkspace({ silent: false });
-                }}
-                disabled={loadingWorkspace}
-              >
-                {loadingWorkspace ? text.refreshingAction : text.refreshAction}
-              </button>
             </div>
 
+            {showProcess ? (
+              <div className="minimal-process-panel">
+                <span className="minimal-status-label">{text.processTitle}</span>
+                <div className="minimal-process-list">
+                  {processSteps.map((step, index) => {
+                    const isDone = pipelineStatus === "SUCCESS" ? true : index < processStageIndex;
+                    const isActive = pipelineStatus === "ERROR" ? index === processStageIndex : index === processStageIndex;
+
+                    return (
+                      <div
+                        key={step}
+                        className={`minimal-process-step ${isDone ? "is-done" : ""} ${isActive ? "is-active" : ""} ${pipelineStatus === "ERROR" && isActive ? "is-error" : ""}`}
+                      >
+                        <span className="minimal-process-badge">{String(index + 1).padStart(2, "0")}</span>
+                        <p>{step}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <p className="field-note minimal-process-empty">{text.processWaiting}</p>
+            )}
+
             <div className="minimal-status-panel">
-              <span className="minimal-status-label">{text.claimTitle}</span>
+              <span className="minimal-status-label">{text.latestStatus}</span>
               <p className={latestStatusClassName}>{latestStatus}</p>
             </div>
           </article>
         </section>
-      </Reveal>
+      </section>
     </main>
   );
 }
