@@ -12,6 +12,45 @@ const NAV_ITEMS = [
   { href: "/signup", key: "signup" }
 ];
 
+const FOOTER_CONTENT = {
+  en: {
+    quickLinksTitle: "Quick links",
+    quickLinks: [
+      { href: "/about", label: "About AgriTech" },
+      { href: "/#how-it-works", label: "How it works" }
+    ],
+    supportTitle: "Support",
+    supportLinks: [
+      { href: "/terms", label: "Terms of service" },
+      { href: "/privacy", label: "Privacy policy" }
+    ],
+    helpTitle: "Claim help",
+    helpText: "Need OTP or claim guidance? Open the main workflow from here.",
+    helpPrimaryGuest: "Open login",
+    helpPrimarySignedIn: "Open claim",
+    helpSecondary: "Read overview",
+    rights: "All rights reserved."
+  },
+  hi: {
+    quickLinksTitle: "त्वरित लिंक",
+    quickLinks: [
+      { href: "/about", label: "AgriTech के बारे में" },
+      { href: "/#how-it-works", label: "कैसे काम करता है" }
+    ],
+    supportTitle: "सहायता",
+    supportLinks: [
+      { href: "/terms", label: "सेवा की शर्तें" },
+      { href: "/privacy", label: "गोपनीयता नीति" }
+    ],
+    helpTitle: "क्लेम सहायता",
+    helpText: "OTP या claim guidance चाहिए? यहां से main workflow खोलें।",
+    helpPrimaryGuest: "लॉगिन खोलें",
+    helpPrimarySignedIn: "क्लेम खोलें",
+    helpSecondary: "जानकारी देखें",
+    rights: "सभी अधिकार सुरक्षित।"
+  }
+};
+
 function isActive(pathname, href) {
   if (href === "/") {
     return pathname === "/";
@@ -26,26 +65,22 @@ export function AppFrame({ children }) {
   const { copy, language, setLanguage, theme, toggleTheme, session, isAuthenticated, clearSession } =
     useSiteState();
   const themeLabel = theme === "dark" ? copy.common.theme.dark : copy.common.theme.light;
+  const footerCopy = FOOTER_CONTENT[language] || FOOTER_CONTENT.en;
+  const currentYear = new Date().getFullYear();
   const visibleNavItems = isAuthenticated
     ? NAV_ITEMS.filter((item) => item.href === "/" || item.href === "/project")
     : NAV_ITEMS;
-  const sessionLabel = session?.fullName || session?.email || "Session active";
-  const sessionTitle = session?.fullName && session?.email ? `${session.fullName} (${session.email})` : sessionLabel;
+  const sessionLabel = session?.fullName || session?.email || copy.common.sessionActive;
 
   return (
     <>
-      <div className="page-noise" aria-hidden="true" />
-      <div className="page-halo page-halo-left" aria-hidden="true" />
-      <div className="page-halo page-halo-right" aria-hidden="true" />
-
       <header className="topbar page-shell">
         <Link className="brand-lockup" href="/">
           <span className="brand-mark" aria-hidden="true">
             <img className="brand-logo" src="/agritech-logo-mark.svg" alt="" />
           </span>
-          <span>
+          <span className="brand-copy">
             <strong className="brand-name">AgriTech</strong>
-            <span className="brand-caption">{copy.common.brandCaption}</span>
           </span>
         </Link>
 
@@ -62,25 +97,6 @@ export function AppFrame({ children }) {
         </nav>
 
         <div className="toolbar">
-          {isAuthenticated ? (
-            <div className="session-chip" title={sessionTitle}>
-              <span className="session-dot" aria-hidden="true" />
-              <span className="session-email">{sessionLabel}</span>
-              <button
-                type="button"
-                className="session-action"
-                onClick={() => {
-                  clearSession();
-                  if (pathname === "/project") {
-                    router.push("/");
-                  }
-                }}
-              >
-                Logout
-              </button>
-            </div>
-          ) : null}
-
           <div className="language-switch" role="group" aria-label={copy.common.languageLabel}>
             <button
               type="button"
@@ -101,13 +117,82 @@ export function AppFrame({ children }) {
           <button type="button" className="theme-toggle" onClick={toggleTheme}>
             {themeLabel}
           </button>
+
+          {isAuthenticated ? (
+            <div className="session-chip" title={sessionLabel}>
+              <span className="session-email">{sessionLabel}</span>
+              <button
+                type="button"
+                className="session-action"
+                onClick={() => {
+                  clearSession();
+                  if (pathname === "/project") {
+                    router.push("/");
+                  }
+                }}
+              >
+                {copy.common.logout}
+              </button>
+            </div>
+          ) : null}
         </div>
       </header>
 
       {children}
 
-      <footer className="footer page-shell">
-        <p>{copy.common.footerText}</p>
+      <footer className="footer">
+        <div className="footer-shell page-shell">
+          <div className="footer-grid">
+            <div className="footer-brand-block">
+              <Link className="footer-brand" href="/">
+                <span className="footer-brand-mark" aria-hidden="true">
+                  <img className="brand-logo" src="/agritech-logo-mark.svg" alt="" />
+                </span>
+                <strong className="footer-brand-name">AgriTech</strong>
+              </Link>
+              <p className="footer-description">{copy.common.footerText}</p>
+            </div>
+
+            <div className="footer-column">
+              <h2 className="footer-heading">{footerCopy.quickLinksTitle}</h2>
+              <div className="footer-link-list">
+                {footerCopy.quickLinks.map((item) => (
+                  <Link key={item.href} className="footer-link" href={item.href}>
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="footer-column">
+              <h2 className="footer-heading">{footerCopy.supportTitle}</h2>
+              <div className="footer-link-list">
+                {footerCopy.supportLinks.map((item) => (
+                  <Link key={item.href} className="footer-link" href={item.href}>
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="footer-column">
+              <h2 className="footer-heading">{footerCopy.helpTitle}</h2>
+              <p className="footer-help-text">{footerCopy.helpText}</p>
+              <div className="footer-help-actions">
+                <Link className="footer-cta" href={isAuthenticated ? "/project" : "/login"}>
+                  {isAuthenticated ? footerCopy.helpPrimarySignedIn : footerCopy.helpPrimaryGuest}
+                </Link>
+                <Link className="footer-link footer-link-strong" href="/about">
+                  {footerCopy.helpSecondary}
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="footer-bottom">
+            <p>{`© ${currentYear} AgriTech. ${footerCopy.rights}`}</p>
+          </div>
+        </div>
       </footer>
     </>
   );
