@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSiteState } from "../../components/site-state";
 import {
   DEMO_HASHED_FARMER_ID,
-  fetchFarmerPlot,
-  fetchProfile,
   fetchPublicKey,
   getErrorMessage,
   submitClaimBundle
@@ -37,62 +35,60 @@ const PROCESS_STAGE_INDEX = {
 
 const PIPELINE_STATUS_LABELS = {
   en: {
-    IDLE: "Choose a damage type and attach one field image.",
-    FETCHING_KEY: "Fetching the secure public key from the backend.",
-    HASHING: "Hashing the selected image on the client.",
-    GENERATING_PROOF: "Preparing the local geofence proof bundle.",
-    ENCRYPTING: "Encrypting the payload in the browser.",
-    SUBMITTING: "Submitting the secure claim bundle.",
-    SUCCESS: "Secure claim submitted successfully.",
-    ERROR: "Secure claim submission did not complete."
+    IDLE: "Upload an image to start the claim.",
+    FETCHING_KEY: "Preparing secure key.",
+    HASHING: "Hashing image.",
+    GENERATING_PROOF: "Preparing proof bundle.",
+    ENCRYPTING: "Encrypting payload.",
+    SUBMITTING: "Submitting claim.",
+    SUCCESS: "Claim submitted successfully.",
+    ERROR: "Claim submission failed."
   },
   hi: {
-    IDLE: "Damage type चुनें और एक field image जोड़ें।",
-    FETCHING_KEY: "Backend से secure public key लाई जा रही है।",
-    HASHING: "चुनी गई image client पर hash हो रही है।",
-    GENERATING_PROOF: "Local geofence proof bundle तैयार हो रहा है।",
-    ENCRYPTING: "Payload browser में encrypt हो रहा है।",
-    SUBMITTING: "Secure claim bundle submit हो रहा है।",
-    SUCCESS: "Secure claim सफलतापूर्वक submit हो गई।",
-    ERROR: "Secure claim submission पूरा नहीं हुआ।"
+    IDLE: "क्लेम शुरू करने के लिए image upload करें।",
+    FETCHING_KEY: "Secure key तैयार हो रही है।",
+    HASHING: "Image hash हो रही है।",
+    GENERATING_PROOF: "Proof bundle तैयार हो रहा है।",
+    ENCRYPTING: "Payload encrypt हो रहा है।",
+    SUBMITTING: "Claim submit हो रही है।",
+    SUCCESS: "Claim सफलतापूर्वक submit हो गई।",
+    ERROR: "Claim submission पूरा नहीं हुआ।"
   }
 };
 
 const PROJECT_UI_COPY = {
   en: {
-    eyebrow: "Secure workspace",
-    heroTitleAuthenticated: "Claim card",
-    heroLeadAuthenticated: "Choose Flood, Drought, or Pest, then upload one image to start the claim.",
-    heroTitleGuest: "Sign in to open the secure claim workspace.",
-    heroLeadGuest: "Email OTP unlocks the profile, plot lookup, and encrypted claim flow.",
+    eyebrow: "Claim",
+    title: "File a crop claim.",
+    leadSignedIn: "Everything important stays in one card: choose type, upload one image, then track the process.",
+    leadGuest: "Sign in first to open the claim card.",
     signedInAs: "Signed in as",
-    states: {
-      live: "Live",
-      ready: "Ready",
-      pending: "Pending",
-      locked: "Locked",
-      otp: "OTP",
-      sent: "Sent",
-      sessionReady: "Session ready",
-      signInRequired: "Sign in required",
-      loading: "Loading"
-    },
-    flags: {
-      publicKey: "public key ready",
-      profile: "profile loaded",
-      plot: "plot loaded"
-    },
-    workspaceReadyPrefix: "Workspace ready:",
-    workspaceLocked: "Sign in to load the profile, plot, and secure claim tools.",
-    claimTitle: "Submit claim",
-    claimLead: "Only the main claim flow is shown here.",
-    selectedEvidence: "Selected evidence",
-    noEvidence: "No file selected",
-    latestStatus: "Latest status",
+    sessionReady: "Session ready",
+    signInRequired: "Sign in required",
+    damageTypeLabel: "Select damage type",
     uploadAction: "Upload image",
     loginAction: "Open login",
+    selectedEvidence: "Selected image",
+    latestStatus: "Status",
     processTitle: "Claim process",
-    processWaiting: "The claim process will appear after you upload an image.",
+    processWaiting: "The process appears after you upload an image.",
+    helperGuest: "OTP login unlocks secure upload and submission.",
+    helperSignedIn: "Only the core claim steps are shown here so the page stays focused.",
+    emailFallback: "Not available",
+    guideCards: [
+      {
+        title: "Choose damage",
+        text: "Keep the claim type limited to Flood, Drought, or Pest."
+      },
+      {
+        title: "Upload one image",
+        text: "One clear field image is enough to start the workflow."
+      },
+      {
+        title: "Track the flow",
+        text: "After upload, the full secure claim process appears below."
+      }
+    ],
     processSteps: [
       "Image added",
       "Secure key",
@@ -100,67 +96,55 @@ const PROJECT_UI_COPY = {
       "Proof bundle",
       "Encryption",
       "Submission"
-    ],
-    plotUnavailable: "Live plot coordinates are not loaded yet.",
-    vertexLabel: "vertices",
-    polygonFallback: "Polygon"
+    ]
   },
   hi: {
-    eyebrow: "Secure workspace",
-    heroTitleAuthenticated: "Claim card",
-    heroLeadAuthenticated: "Flood, Drought ya Pest चुनें, फिर claim शुरू करने के लिए एक image upload करें।",
-    heroTitleGuest: "Secure claim workspace खोलने के लिए sign in करें।",
-    heroLeadGuest: "Email OTP से profile, plot lookup और encrypted claim flow खुलेगा।",
-    signedInAs: "Signed in as",
-    states: {
-      live: "Live",
-      ready: "Ready",
-      pending: "Pending",
-      locked: "Locked",
-      otp: "OTP",
-      sent: "Sent",
-      sessionReady: "Session ready",
-      signInRequired: "Sign in required",
-      loading: "Loading"
-    },
-    flags: {
-      publicKey: "public key ready",
-      profile: "profile loaded",
-      plot: "plot loaded"
-    },
-    workspaceReadyPrefix: "Workspace ready:",
-    workspaceLocked: "Profile, plot और secure claim tools देखने के लिए sign in करें।",
-    claimTitle: "Claim submit करें",
-    claimLead: "यहां सिर्फ मुख्य claim flow दिखाया गया है।",
-    selectedEvidence: "Selected evidence",
-    noEvidence: "कोई file selected नहीं है",
-    latestStatus: "Latest status",
+    eyebrow: "क्लेम",
+    title: "फसल क्लेम दर्ज करें।",
+    leadSignedIn: "सारी जरूरी चीजें एक card में हैं: type चुनें, एक image upload करें, फिर process track करें।",
+    leadGuest: "Claim card खोलने के लिए पहले sign in करें।",
+    signedInAs: "लॉगिन किया गया",
+    sessionReady: "सत्र तैयार",
+    signInRequired: "लॉगिन ज़रूरी",
+    damageTypeLabel: "Damage type चुनें",
     uploadAction: "Image upload करें",
-    loginAction: "Login खोलें",
+    loginAction: "लॉगिन खोलें",
+    selectedEvidence: "चुनी गई image",
+    latestStatus: "स्थिति",
     processTitle: "Claim process",
-    processWaiting: "Image upload करने के बाद claim process यहां दिखेगा।",
+    processWaiting: "Image upload करने के बाद process यहां दिखेगा।",
+    helperGuest: "OTP login secure upload और submission खोलता है।",
+    helperSignedIn: "यहां सिर्फ core claim steps दिखते हैं ताकि page focused रहे।",
+    emailFallback: "उपलब्ध नहीं",
+    guideCards: [
+      {
+        title: "Damage चुनें",
+        text: "Claim type को Flood, Drought, या Pest तक ही रखें।"
+      },
+      {
+        title: "एक image upload करें",
+        text: "Workflow शुरू करने के लिए एक साफ field image काफी है।"
+      },
+      {
+        title: "Flow track करें",
+        text: "Upload के बाद पूरा secure claim process नीचे दिखता है।"
+      }
+    ],
     processSteps: [
-      "Image added",
+      "Image जोड़ी गई",
       "Secure key",
       "Image hash",
       "Proof bundle",
       "Encryption",
       "Submission"
-    ],
-    plotUnavailable: "Live plot coordinates अभी load नहीं हुई हैं।",
-    vertexLabel: "vertices",
-    polygonFallback: "Polygon"
+    ]
   }
 };
-
-function getUniqueCandidates(values) {
-  return [...new Set(values.filter((value) => typeof value === "string" && value.trim()))];
-}
 
 export default function ProjectPage() {
   const router = useRouter();
   const fileInputRef = useRef(null);
-  const { language, isAuthenticated, session, setSession } = useSiteState();
+  const { language, isAuthenticated, session } = useSiteState();
   const text = PROJECT_UI_COPY[language] || PROJECT_UI_COPY.en;
   const pipelineLabels = PIPELINE_STATUS_LABELS[language] || PIPELINE_STATUS_LABELS.en;
   const damageTypes = DAMAGE_TYPES[language] || DAMAGE_TYPES.en;
@@ -169,126 +153,14 @@ export default function ProjectPage() {
   const [selectedFileName, setSelectedFileName] = useState("");
   const [pipelineStatus, setPipelineStatus] = useState("IDLE");
   const [workspaceError, setWorkspaceError] = useState("");
-  const [workspaceStatus, setWorkspaceStatus] = useState("");
   const [claimResponse, setClaimResponse] = useState("");
   const [publicKeyBase64, setPublicKeyBase64] = useState("");
-  const [plot, setPlot] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [loadingWorkspace, setLoadingWorkspace] = useState(false);
   const [processStageIndex, setProcessStageIndex] = useState(-1);
-
-  const hashedFarmerId = session?.hashedFarmerId || DEMO_HASHED_FARMER_ID;
-  const displayName = profile?.fullName || session?.fullName || "Verified Farmer";
-  const displayEmail = profile?.email || session?.email || "Not available";
-
-  const refreshWorkspace = async ({ silent = false } = {}) => {
-    if (!silent) {
-      setLoadingWorkspace(true);
-    }
-
-    const currentStatus = [];
-    let nextError = "";
-    let nextProfile = null;
-
-    try {
-      const nextPublicKey = await fetchPublicKey();
-      setPublicKeyBase64(nextPublicKey);
-      currentStatus.push(text.flags.publicKey);
-    } catch (error) {
-      nextError = getErrorMessage(error);
-      setPublicKeyBase64("");
-    }
-
-    if (isAuthenticated && session?.token) {
-      try {
-        nextProfile = await fetchProfile(session.token);
-        setProfile(nextProfile);
-        currentStatus.push(text.flags.profile);
-
-        setSession({
-          ...session,
-          farmerId: nextProfile.id || session.farmerId,
-          fullName: nextProfile.fullName || session.fullName,
-          email: nextProfile.email || session.email,
-          wallet: nextProfile.walletAddress || session.wallet
-        });
-      } catch (error) {
-        setProfile(null);
-        nextError = nextError || getErrorMessage(error);
-      }
-
-      const plotCandidates = getUniqueCandidates([
-        nextProfile?.id,
-        session?.farmerId,
-        session?.hashedFarmerId,
-        DEMO_HASHED_FARMER_ID
-      ]);
-
-      let nextPlot = null;
-      let plotCandidateUsed = "";
-      let plotError = "";
-
-      for (const candidate of plotCandidates) {
-        try {
-          nextPlot = await fetchFarmerPlot({
-            token: session.token,
-            hashedFarmerId: candidate
-          });
-          plotCandidateUsed = candidate;
-          break;
-        } catch (error) {
-          plotError = plotError || getErrorMessage(error);
-        }
-      }
-
-      if (nextPlot) {
-        setPlot(nextPlot);
-        currentStatus.push(text.flags.plot);
-
-        if (plotCandidateUsed && plotCandidateUsed !== session?.hashedFarmerId) {
-          setSession({
-            ...session,
-            farmerId: nextProfile?.id || session.farmerId,
-            fullName: nextProfile?.fullName || session.fullName,
-            email: nextProfile?.email || session.email,
-            wallet: nextProfile?.walletAddress || session.wallet,
-            hashedFarmerId: plotCandidateUsed
-          });
-        }
-      } else {
-        setPlot(null);
-        nextError = nextError || plotError || text.plotUnavailable;
-      }
-    } else {
-      setProfile(null);
-      setPlot(null);
-    }
-
-    setWorkspaceError(nextError);
-
-    if (nextError && !currentStatus.length) {
-      setWorkspaceStatus("");
-    } else if (currentStatus.length) {
-      setWorkspaceStatus(`${text.workspaceReadyPrefix} ${currentStatus.join(", ")}.`);
-    } else if (!isAuthenticated) {
-      setWorkspaceStatus(text.workspaceLocked);
-    }
-
-    if (!silent) {
-      setLoadingWorkspace(false);
-    }
-  };
-
-  useEffect(() => {
-    refreshWorkspace({ silent: false });
-  }, [isAuthenticated, session?.token, hashedFarmerId]);
 
   const latestStatus =
     claimResponse ||
     workspaceError ||
-    (processStageIndex >= 0
-      ? pipelineLabels[pipelineStatus] || pipelineLabels.IDLE
-      : text.processWaiting || workspaceStatus || pipelineLabels.IDLE);
+    (processStageIndex >= 0 ? pipelineLabels[pipelineStatus] || pipelineLabels.IDLE : text.processWaiting);
 
   const latestStatusClassName = claimResponse
     ? "form-result"
@@ -296,8 +168,9 @@ export default function ProjectPage() {
       ? "form-status form-status-error"
       : "form-status form-status-neutral";
 
-  const processSteps = text.processSteps || [];
   const showProcess = processStageIndex >= 0;
+  const hashedFarmerId = session?.hashedFarmerId || DEMO_HASHED_FARMER_ID;
+  const displayEmail = session?.email || text.emailFallback;
 
   const handleClaimButtonClick = () => {
     if (!isAuthenticated) {
@@ -317,8 +190,8 @@ export default function ProjectPage() {
 
     setSelectedFileName(file.name);
     setPipelineStatus("IDLE");
-    setClaimResponse("");
     setWorkspaceError("");
+    setClaimResponse("");
     setProcessStageIndex(0);
 
     try {
@@ -348,7 +221,6 @@ export default function ProjectPage() {
       setClaimResponse(responseText);
       setPipelineStatus("SUCCESS");
       setProcessStageIndex(PROCESS_STAGE_INDEX.SUCCESS);
-      setWorkspaceStatus("Secure claim flow completed against the backend.");
     } catch (error) {
       setPipelineStatus("ERROR");
       setWorkspaceError(getErrorMessage(error));
@@ -361,91 +233,96 @@ export default function ProjectPage() {
 
   return (
     <main className="page-main page-shell">
-      <section className="project-minimal-shell">
-        <section className="minimal-single-column">
-          <article className="workspace-card minimal-primary-card">
-            <div className="minimal-topline">
-              <div className="minimal-copy">
-                <p className="eyebrow">{text.eyebrow}</p>
-                <h1>{isAuthenticated ? text.heroTitleAuthenticated : text.heroTitleGuest}</h1>
-                <p className="page-lead minimal-lead">
-                  {isAuthenticated ? text.heroLeadAuthenticated : text.heroLeadGuest}
-                </p>
-              </div>
-
-              <span className="status-chip">
-                {isAuthenticated ? text.states.sessionReady : text.states.signInRequired}
-              </span>
+      <section className="project-shell">
+        <article className="project-card project-card-modern">
+          <div className="project-head">
+            <div>
+              <p className="eyebrow">{text.eyebrow}</p>
+              <h1>{text.title}</h1>
+              <p className="page-lead">{isAuthenticated ? text.leadSignedIn : text.leadGuest}</p>
+              {isAuthenticated ? <p className="signed-in-text">{`${text.signedInAs} ${displayEmail}`}</p> : null}
             </div>
+            <span className="status-chip">{isAuthenticated ? text.sessionReady : text.signInRequired}</span>
+          </div>
 
-            {isAuthenticated ? <p className="minimal-signed-in">{`${text.signedInAs} ${displayEmail}`}</p> : null}
+          <div className="project-guide-grid">
+            {text.guideCards.map((card) => (
+              <article key={card.title} className="project-guide-card">
+                <h3>{card.title}</h3>
+                <p>{card.text}</p>
+              </article>
+            ))}
+          </div>
 
-            <div className="damage-selector" role="group" aria-label="Select damage type">
-              {damageTypes.map((type) => (
-                <button
-                  key={type.value}
-                  type="button"
-                  className={`damage-toggle ${selectedDamageType === type.value ? "active" : ""}`}
-                  onClick={() => setSelectedDamageType(type.value)}
-                >
-                  {type.label}
-                </button>
-              ))}
-            </div>
+          <p className="project-helper-copy">{isAuthenticated ? text.helperSignedIn : text.helperGuest}</p>
 
-            <input
-              ref={fileInputRef}
-              className="hidden-upload"
-              type="file"
-              accept="image/*"
-              onChange={handleFileSelected}
-            />
-
-            {selectedFileName ? (
-              <div className="minimal-evidence-grid">
-                <div className="minimal-evidence-card">
-                  <span>{text.selectedEvidence}</span>
-                  <strong>{selectedFileName}</strong>
-                </div>
-              </div>
-            ) : null}
-
-            <div className="hero-actions minimal-actions">
-              <button type="button" className="button button-primary" onClick={handleClaimButtonClick}>
-                {isAuthenticated ? text.uploadAction : text.loginAction}
+          <div className="damage-selector" role="group" aria-label={text.damageTypeLabel}>
+            {damageTypes.map((type) => (
+              <button
+                key={type.value}
+                type="button"
+                className={`damage-toggle ${selectedDamageType === type.value ? "active" : ""}`}
+                onClick={() => setSelectedDamageType(type.value)}
+              >
+                {type.label}
               </button>
+            ))}
+          </div>
+
+          <input
+            ref={fileInputRef}
+            className="hidden-upload"
+            type="file"
+            accept="image/*"
+            onChange={handleFileSelected}
+          />
+
+          <div className="project-action-row">
+            <button
+              type="button"
+              className="button button-primary project-action-button"
+              onClick={handleClaimButtonClick}
+            >
+              {isAuthenticated ? text.uploadAction : text.loginAction}
+            </button>
+          </div>
+
+          {selectedFileName ? (
+            <div className="minimal-evidence-card">
+              <span>{text.selectedEvidence}</span>
+              <strong>{selectedFileName}</strong>
             </div>
+          ) : null}
 
-            {showProcess ? (
-              <div className="minimal-process-panel">
-                <span className="minimal-status-label">{text.processTitle}</span>
-                <div className="minimal-process-list">
-                  {processSteps.map((step, index) => {
-                    const isDone = pipelineStatus === "SUCCESS" ? true : index < processStageIndex;
-                    const isActive = pipelineStatus === "ERROR" ? index === processStageIndex : index === processStageIndex;
+          {showProcess ? (
+            <div className="minimal-process-panel">
+              <span className="minimal-status-label">{text.processTitle}</span>
+              <div className="minimal-process-list">
+                {text.processSteps.map((step, index) => {
+                  const isDone = pipelineStatus === "SUCCESS" ? true : index < processStageIndex;
+                  const isActive = index === processStageIndex;
 
-                    return (
-                      <div
-                        key={step}
-                        className={`minimal-process-step ${isDone ? "is-done" : ""} ${isActive ? "is-active" : ""} ${pipelineStatus === "ERROR" && isActive ? "is-error" : ""}`}
-                      >
-                        <span className="minimal-process-badge">{String(index + 1).padStart(2, "0")}</span>
-                        <p>{step}</p>
-                      </div>
-                    );
-                  })}
-                </div>
+                  return (
+                    <div
+                      key={step}
+                      className={`minimal-process-step ${isDone ? "is-done" : ""} ${isActive ? "is-active" : ""} ${pipelineStatus === "ERROR" && isActive ? "is-error" : ""}`}
+                    >
+                      <span className="minimal-process-badge">{String(index + 1).padStart(2, "0")}</span>
+                      <p>{step}</p>
+                    </div>
+                  );
+                })}
               </div>
-            ) : (
-              <p className="field-note minimal-process-empty">{text.processWaiting}</p>
-            )}
-
-            <div className="minimal-status-panel">
-              <span className="minimal-status-label">{text.latestStatus}</span>
-              <p className={latestStatusClassName}>{latestStatus}</p>
             </div>
-          </article>
-        </section>
+          ) : (
+            <p className="field-note minimal-process-empty">{text.processWaiting}</p>
+          )}
+
+          <div className="minimal-status-panel">
+            <span className="minimal-status-label">{text.latestStatus}</span>
+            <p className={latestStatusClassName}>{latestStatus}</p>
+          </div>
+        </article>
       </section>
     </main>
   );

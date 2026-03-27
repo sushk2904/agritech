@@ -3,14 +3,37 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Reveal } from "../../components/reveal";
 import { useSiteState } from "../../components/site-state";
 import { getErrorMessage, isValidEmail, requestOtp } from "../../lib/backend";
 
+const SIGNUP_SURFACE = {
+  en: {
+    panelKicker: "Onboarding",
+    panelTitle: "Create access without extra friction.",
+    panelText: "This screen now feels more complete while still keeping the signup path short and direct.",
+    points: [
+      "Name, email, language",
+      "OTP verification next",
+      "Claim workflow opens after setup"
+    ]
+  },
+  hi: {
+    panelKicker: "Onboarding",
+    panelTitle: "Extra friction के बिना access बनाएं।",
+    panelText: "यह screen अब ज्यादा complete लगती है, लेकिन signup path अभी भी short और direct है.",
+    points: [
+      "नाम, email, language",
+      "अगला step OTP verification",
+      "Setup के बाद claim workflow खुलता है"
+    ]
+  }
+};
+
 export default function SignupPage() {
   const router = useRouter();
-  const { copy, setLanguage } = useSiteState();
+  const { copy, language, setLanguage } = useSiteState();
   const { signup } = copy;
+  const surface = SIGNUP_SURFACE[language] || SIGNUP_SURFACE.en;
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
@@ -24,20 +47,20 @@ export default function SignupPage() {
     const preferredLanguage = String(formData.get("language") || "en");
 
     if (!fullName) {
-      setError("Please enter the farmer's full name before requesting the OTP.");
+      setError(signup.nameError);
       setStatus("");
       return;
     }
 
     if (!isValidEmail(contact)) {
-      setError("The current backend sends OTP only to email addresses.");
+      setError(signup.emailError);
       setStatus("");
       return;
     }
 
     setPending(true);
     setError("");
-    setStatus("Creating or locating the account, then sending an email OTP.");
+    setStatus(signup.sendingStatus);
 
     try {
       if (preferredLanguage === "en" || preferredLanguage === "hi") {
@@ -56,23 +79,31 @@ export default function SignupPage() {
 
   return (
     <main className="page-main page-shell">
-      <Reveal className="auth-layout">
-        <section className="auth-panel">
+      <section className="auth-shell">
+        <div className="auth-copy">
           <p className="eyebrow">{signup.eyebrow}</p>
           <h1>{signup.title}</h1>
           <p className="page-lead">{signup.lead}</p>
 
-          <ul className="point-list">
-            {signup.points.map((point) => (
-              <li key={point}>{point}</li>
-            ))}
-          </ul>
-        </section>
+          <div className="auth-side-panel">
+            <span className="panel-kicker">{surface.panelKicker}</span>
+            <h2 className="panel-title">{surface.panelTitle}</h2>
+            <p className="panel-copy">{surface.panelText}</p>
 
-        <section className="auth-card">
+            <div className="auth-support-grid">
+              {surface.points.map((point) => (
+                <article key={point} className="mini-card">
+                  <p>{point}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <section className="auth-card auth-card-modern">
           <div className="card-copy">
             <h2>{signup.cardTitle}</h2>
-            <p>{signup.cardLead}</p>
+            <p className="field-note">{signup.note}</p>
           </div>
 
           <form className="form-grid" onSubmit={handleSubmit}>
@@ -107,11 +138,10 @@ export default function SignupPage() {
             </label>
 
             <button type="submit" className="button button-primary button-block" disabled={pending}>
-              {pending ? "Sending code..." : signup.submit}
+              {pending ? signup.pendingLabel : signup.submit}
             </button>
           </form>
 
-          <p className="field-note">This backend auto-creates the farmer account after email OTP verification.</p>
           {status ? <p className="form-status form-status-neutral">{status}</p> : null}
           {error ? <p className="form-status form-status-error">{error}</p> : null}
 
@@ -122,7 +152,7 @@ export default function SignupPage() {
             </Link>
           </p>
         </section>
-      </Reveal>
+      </section>
     </main>
   );
 }

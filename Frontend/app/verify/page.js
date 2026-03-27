@@ -3,11 +3,33 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { Reveal } from "../../components/reveal";
 import { useSiteState } from "../../components/site-state";
 import { getErrorMessage, requestOtp, verifyOtp } from "../../lib/backend";
 
 const CODE_LENGTH = 4;
+
+const VERIFY_SURFACE = {
+  en: {
+    panelKicker: "Verification",
+    panelTitle: "One last step before the claim card.",
+    panelText: "This page now gives clearer context while keeping the OTP step short and focused.",
+    points: [
+      "Check the email inbox",
+      "Enter the 4-digit code",
+      "Continue to the claim workspace"
+    ]
+  },
+  hi: {
+    panelKicker: "Verification",
+    panelTitle: "Claim card से पहले एक आखिरी step.",
+    panelText: "यह page अब clearer context देता है, लेकिन OTP step अभी भी short और focused है.",
+    points: [
+      "Email inbox check करें",
+      "4-digit code दर्ज करें",
+      "Claim workspace में जाएं"
+    ]
+  }
+};
 
 function normalizeValue(value) {
   return value.replace(/\D/g, "").slice(0, CODE_LENGTH);
@@ -20,8 +42,9 @@ function focusInput(index) {
 
 function VerifyPageContent() {
   const router = useRouter();
-  const { copy, setSession } = useSiteState();
+  const { copy, language, setSession } = useSiteState();
   const { verify } = copy;
+  const surface = VERIFY_SURFACE[language] || VERIFY_SURFACE.en;
   const searchParams = useSearchParams();
   const flow = searchParams.get("flow") === "signup" ? "signup" : "login";
   const contact = String(searchParams.get("contact") || verify.fallbackContact).trim().toLowerCase();
@@ -91,30 +114,38 @@ function VerifyPageContent() {
 
   return (
     <main className="page-main page-shell">
-      <Reveal className="auth-layout verify-layout">
-        <section className="auth-panel">
+      <section className="auth-shell">
+        <div className="auth-copy">
           <p className="eyebrow">{verify.eyebrow}</p>
           <h1>{verify.title}</h1>
           <p className="page-lead">{lead}</p>
 
-          <ul className="point-list">
-            {verify.points.map((point) => (
-              <li key={point}>{point}</li>
-            ))}
-          </ul>
-        </section>
+          <div className="auth-side-panel">
+            <span className="panel-kicker">{surface.panelKicker}</span>
+            <h2 className="panel-title">{surface.panelTitle}</h2>
+            <p className="panel-copy">{surface.panelText}</p>
 
-        <section className="auth-card verify-card">
+            <div className="auth-support-grid">
+              {surface.points.map((point) => (
+                <article key={point} className="mini-card">
+                  <p>{point}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <section className="auth-card auth-card-modern">
           <div className="card-copy">
             <h2>{verify.codeLabel}</h2>
-            <p>
+            <p className="field-note">
               {verify.contactLabel}: <strong>{contact}</strong>
             </p>
-            <p className="field-note">The current backend sends a 4-digit OTP to the email address above.</p>
+            <p className="field-note">{verify.note}</p>
           </div>
 
           <form
-            className="verify-form"
+            className="form-grid"
             onSubmit={async (event) => {
               event.preventDefault();
 
@@ -124,13 +155,13 @@ function VerifyPageContent() {
 
               setPending(true);
               setError("");
-              setStatus("Verifying the email OTP and opening your JWT session.");
+              setStatus(verify.verifyingStatus);
 
               try {
                 const result = await verifyOtp(contact, code.join(""));
                 setSession(result.session);
                 setVerified(true);
-                setStatus("Verification complete. Your workspace session is ready.");
+                setStatus(verify.verifiedStatus);
               } catch (verifyError) {
                 setVerified(false);
                 setError(getErrorMessage(verifyError));
@@ -161,9 +192,9 @@ function VerifyPageContent() {
               ))}
             </div>
 
-            <div className="verify-meta">
+            <div className="verify-actions">
               <button type="submit" className="button button-primary" disabled={!isComplete || pending || resending}>
-                {pending ? "Verifying..." : verify.submit}
+                {pending ? verify.pendingLabel : verify.submit}
               </button>
               <button
                 type="button"
@@ -172,22 +203,21 @@ function VerifyPageContent() {
                 onClick={async () => {
                   setResending(true);
                   setError("");
-                  setStatus("Requesting a fresh OTP from the backend.");
+                  setStatus("");
                   setVerified(false);
                   setCode(Array(CODE_LENGTH).fill(""));
                   try {
                     await requestOtp(contact);
-                    setStatus("A new OTP has been sent to your email.");
+                    setStatus(verify.resentStatus);
                     focusInput(0);
                   } catch (resendError) {
-                    setStatus("");
                     setError(getErrorMessage(resendError));
                   } finally {
                     setResending(false);
                   }
                 }}
               >
-                {resending ? "Sending..." : verify.resend}
+                {resending ? verify.resendPendingLabel : verify.resend}
               </button>
             </div>
           </form>
@@ -196,18 +226,15 @@ function VerifyPageContent() {
           {error ? <p className="form-status form-status-error">{error}</p> : null}
 
           {verified ? (
-            <div className="verify-success">
-              <p className="form-result">{verify.success}</p>
-              <button
-                type="button"
-                className="button button-primary button-block"
-                onClick={() => {
-                  router.push("/project");
-                }}
-              >
-                {verify.continue}
-              </button>
-            </div>
+            <button
+              type="button"
+              className="button button-primary button-block"
+              onClick={() => {
+                router.push("/project");
+              }}
+            >
+              {verify.continue}
+            </button>
           ) : null}
 
           <p className="helper-text">
@@ -217,7 +244,7 @@ function VerifyPageContent() {
             </Link>
           </p>
         </section>
-      </Reveal>
+      </section>
     </main>
   );
 }

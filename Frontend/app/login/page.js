@@ -3,14 +3,37 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Reveal } from "../../components/reveal";
 import { useSiteState } from "../../components/site-state";
 import { getErrorMessage, isValidEmail, requestOtp } from "../../lib/backend";
 
+const LOGIN_SURFACE = {
+  en: {
+    panelKicker: "Access",
+    panelTitle: "Short login, clearer entry.",
+    panelText: "The form stays compact, but the page now explains what happens next so it feels complete.",
+    points: [
+      "Email OTP only",
+      "Hindi and English support",
+      "Claim card opens after verification"
+    ]
+  },
+  hi: {
+    panelKicker: "Access",
+    panelTitle: "Short login, clearer entry.",
+    panelText: "Form compact है, लेकिन page अब next step भी बताता है ताकि यह complete feel हो.",
+    points: [
+      "सिर्फ email OTP",
+      "Hindi और English support",
+      "Verification के बाद claim card खुलता है"
+    ]
+  }
+};
+
 export default function LoginPage() {
   const router = useRouter();
-  const { copy } = useSiteState();
+  const { copy, language } = useSiteState();
   const { login } = copy;
+  const surface = LOGIN_SURFACE[language] || LOGIN_SURFACE.en;
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
@@ -22,14 +45,14 @@ export default function LoginPage() {
     const contact = String(formData.get("contact") || "").trim().toLowerCase();
 
     if (!isValidEmail(contact)) {
-      setError("The current backend sends OTP only to email addresses.");
+      setError(login.emailError);
       setStatus("");
       return;
     }
 
     setPending(true);
     setError("");
-    setStatus("Requesting a verification code from the backend.");
+    setStatus(login.sendingStatus);
 
     try {
       await requestOtp(contact, "");
@@ -44,23 +67,31 @@ export default function LoginPage() {
 
   return (
     <main className="page-main page-shell">
-      <Reveal className="auth-layout">
-        <section className="auth-panel">
+      <section className="auth-shell">
+        <div className="auth-copy">
           <p className="eyebrow">{login.eyebrow}</p>
           <h1>{login.title}</h1>
           <p className="page-lead">{login.lead}</p>
 
-          <ul className="point-list">
-            {login.points.map((point) => (
-              <li key={point}>{point}</li>
-            ))}
-          </ul>
-        </section>
+          <div className="auth-side-panel">
+            <span className="panel-kicker">{surface.panelKicker}</span>
+            <h2 className="panel-title">{surface.panelTitle}</h2>
+            <p className="panel-copy">{surface.panelText}</p>
 
-        <section className="auth-card">
+            <div className="auth-support-grid">
+              {surface.points.map((point) => (
+                <article key={point} className="mini-card">
+                  <p>{point}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <section className="auth-card auth-card-modern">
           <div className="card-copy">
             <h2>{login.cardTitle}</h2>
-            <p>{login.cardLead}</p>
+            <p className="field-note">{login.note}</p>
           </div>
 
           <form className="form-grid" onSubmit={handleSubmit}>
@@ -76,11 +107,10 @@ export default function LoginPage() {
             </label>
 
             <button type="submit" className="button button-primary button-block" disabled={pending}>
-              {pending ? "Sending code..." : login.submit}
+              {pending ? login.pendingLabel : login.submit}
             </button>
           </form>
 
-          <p className="field-note">Email OTP is live on the current backend. Phone entry is not supported yet.</p>
           {status ? <p className="form-status form-status-neutral">{status}</p> : null}
           {error ? <p className="form-status form-status-error">{error}</p> : null}
 
@@ -91,7 +121,7 @@ export default function LoginPage() {
             </Link>
           </p>
         </section>
-      </Reveal>
+      </section>
     </main>
   );
 }
